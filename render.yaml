@@ -1,0 +1,59 @@
+databases:
+  - name: weathergpt-db
+    databaseName: weathergpt
+    plan: free
+
+services:
+  # FastAPI backend — set your real secrets (GEMINI_API_KEY, TWILIO_*,
+  # GOOGLE_API_KEY/GOOGLE_CSE_ID, SESSION_SECRET) in the Render dashboard
+  # under this service's Environment tab. Never commit them to .env in the repo.
+  - type: web
+    name: weather-nova-backend
+    runtime: python
+    rootDir: BACKEND
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      - key: APP_ENV
+        value: production
+      - key: ALLOWED_ORIGINS
+        value: https://weather-nova-frontend.onrender.com
+      - key: WIS2_ENABLE
+        value: "true"
+      - key: GEMINI_MODEL
+        value: gemini-2.5-flash
+      - key: ALERT_DISPATCH_MIN_LEVEL
+        value: orange
+      - key: ALERT_DISPATCH_INTERVAL_SECONDS
+        value: "3600"
+      - key: CYCLONE_ALERT_RADIUS_KM
+        value: "100"
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: ALERT_DISPATCH_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: weathergpt-db
+          property: connectionString
+      # Add these yourself in the Render dashboard (Secret):
+      # GEMINI_API_KEY, TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM_NUMBER,
+      # GOOGLE_API_KEY, GOOGLE_CSE_ID
+      #
+      # After the first deploy, enable PostGIS once on the managed database
+      # (Render dashboard -> weathergpt-db -> Connect -> psql), then run:
+      #   CREATE EXTENSION IF NOT EXISTS postgis;
+      # and load BACKEND/SQL/districts.sql the same way.
+
+  # Static frontend — after the backend deploys, open the frontend's URL,
+  # tap the API-base link (see index.html's "Backend API base URL" prompt)
+  # and paste the backend service's Render URL once, e.g.
+  # https://weather-nova-backend.onrender.com — it's saved in the browser.
+  - type: web
+    name: weather-nova-frontend
+    runtime: static
+    rootDir: FRONTEND
+    buildCommand: ""
+    staticPublishPath: .

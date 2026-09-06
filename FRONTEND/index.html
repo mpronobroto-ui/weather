@@ -1,0 +1,1993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#0b1220">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>WeatherGPT — Conversational Weather Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<meta name="color-scheme" content="light dark">
+<script>
+  (function(){
+    try {
+      const saved = localStorage.getItem('wgpt_theme');
+      if (saved === 'light' || (!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    } catch(e){}
+  })();
+</script>
+<style>
+  :root{
+    color-scheme: dark;
+    --bg: #0B1417;
+    --bg-elev: #152428;
+    --text: #EAF2F1;
+    --muted: #82989A;
+    --card: #1B2E32;
+
+    --ink-950: #0B1417;
+    --ink-900: #0F1B1F;
+    --panel-800: #152428;
+    --panel-700: #1B2E32;
+    --line-700: #24393E;
+    --fog-100: #EAF2F1;
+    --fog-300: #B9CBCA;
+    --fog-500: #82989A;
+    --signal-400: #4FA8D8;
+    --signal-500: #3A8FC0;
+    --green: #2E9E5B;
+    --yellow: #E8B93B;
+    --orange: #E0793C;
+    --red: #D6534A;
+
+    --masthead-bg: linear-gradient(180deg, rgba(11,20,23,0.97) 0%, rgba(11,20,23,0.94) 100%);
+    --composer-bg: #0F1B1F;
+    --user-bubble-bg: #2563EB;
+    --user-bubble-text: #FFFFFF;
+    --bot-bubble-bg: #152428;
+    --bot-bubble-text: #EAF2F1;
+    --bot-bubble-border: #24393E;
+    --card-bg: #1B2E32;
+    --card-border: #24393E;
+    --chip-bg: #152428;
+    --chip-border: #24393E;
+    --chip-text: #B9CBCA;
+    --chip-hover-border: #4FA8D8;
+    --chip-hover-text: #EAF2F1;
+    --input-bg: #152428;
+    --input-text: #EAF2F1;
+    --input-border: #24393E;
+    --input-placeholder: #82989A;
+    --send-btn-bg: #4FA8D8;
+    --send-btn-color: #08141A;
+    --hazard-bg: rgba(214,83,74,0.12);
+    --hazard-border: rgba(214,83,74,0.35);
+    --hazard-text: #F3B7B1;
+    --pill-ok-bg: rgba(46,158,91,0.2);
+    --pill-ok-text: #7ddea6;
+    --pill-ok-border: rgba(46,158,91,0.35);
+    --pill-warn-bg: rgba(224,121,60,0.15);
+    --pill-warn-text: #f0b27a;
+    --pill-warn-border: rgba(224,121,60,0.35);
+    --pill-off-bg: rgba(255,255,255,0.06);
+    --pill-off-text: #9aa4b2;
+    --pill-off-border: rgba(255,255,255,0.1);
+    --toggle-btn-bg: rgba(255,255,255,0.06);
+    --toggle-btn-border: #24393E;
+    --toggle-btn-text: #B9CBCA;
+    --theme-btn-border: rgba(255,255,255,0.15);
+    --theme-btn-hover-border: #4FA8D8;
+    --theme-btn-hover-bg: rgba(79,168,216,0.12);
+    --modal-overlay: rgba(0,0,0,0.65);
+    --modal-bg: #152428;
+    --modal-border: #24393E;
+
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+
+  [data-theme="light"] {
+    color-scheme: light;
+    --bg: #F0F4F8;
+    --bg-elev: #FFFFFF;
+    --text: #0F172A;
+    --muted: #64748B;
+    --card: #FFFFFF;
+
+    --ink-950: #F0F4F8;
+    --ink-900: #FFFFFF;
+    --panel-800: #FFFFFF;
+    --panel-700: #FFFFFF;
+    --line-700: #E2E8F0;
+    --fog-100: #0F172A;
+    --fog-300: #334155;
+    --fog-500: #64748B;
+    --signal-400: #0284C7;
+    --signal-500: #2563EB;
+    --green: #16A34A;
+    --yellow: #CA8A04;
+    --orange: #EA580C;
+    --red: #DC2626;
+
+    --masthead-bg: linear-gradient(180deg, rgba(255,255,255,0.97) 0%, rgba(248,250,252,0.94) 100%);
+    --composer-bg: #FFFFFF;
+    --user-bubble-bg: #2563EB;
+    --user-bubble-text: #FFFFFF;
+    --bot-bubble-bg: #FFFFFF;
+    --bot-bubble-text: #0F172A;
+    --bot-bubble-border: #E2E8F0;
+    --card-bg: #FFFFFF;
+    --card-border: #E2E8F0;
+    --chip-bg: #FFFFFF;
+    --chip-border: #CBD5E1;
+    --chip-text: #334155;
+    --chip-hover-border: #2563EB;
+    --chip-hover-text: #0F172A;
+    --input-bg: #F8FAFC;
+    --input-text: #0F172A;
+    --input-border: #CBD5E1;
+    --input-placeholder: #94A3B8;
+    --send-btn-bg: #2563EB;
+    --send-btn-color: #FFFFFF;
+    --hazard-bg: rgba(220,38,38,0.08);
+    --hazard-border: rgba(220,38,38,0.25);
+    --hazard-text: #B91C1C;
+    --pill-ok-bg: rgba(22,163,74,0.1);
+    --pill-ok-text: #15803D;
+    --pill-ok-border: rgba(22,163,74,0.25);
+    --pill-warn-bg: rgba(234,88,12,0.1);
+    --pill-warn-text: #C2410C;
+    --pill-warn-border: rgba(234,88,12,0.25);
+    --pill-off-bg: rgba(15,23,42,0.06);
+    --pill-off-text: #64748B;
+    --pill-off-border: rgba(15,23,42,0.12);
+    --toggle-btn-bg: #F1F5F9;
+    --toggle-btn-border: #CBD5E1;
+    --toggle-btn-text: #334155;
+    --theme-btn-border: rgba(15,23,42,0.15);
+    --theme-btn-hover-border: #2563EB;
+    --theme-btn-hover-bg: rgba(37,99,235,0.08);
+    --modal-overlay: rgba(15,23,42,0.5);
+    --modal-bg: #FFFFFF;
+    --modal-border: #CBD5E1;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{
+    height:100%;
+    height:100dvh;
+    margin:0;
+    overflow:hidden;
+  }
+  body{
+    background:
+      radial-gradient(1200px 600px at 85% -10%, rgba(79,168,216,0.10), transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, rgba(46,158,91,0.06), transparent 55%),
+      var(--ink-950);
+    color:var(--fog-100);
+    font-family:var(--font-body);
+    -webkit-font-smoothing:antialiased;
+  }
+  [data-theme="light"] body{
+    background:
+      radial-gradient(1200px 600px at 85% -10%, rgba(37,99,235,0.05), transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, rgba(22,163,74,0.04), transparent 55%),
+      var(--ink-950);
+  }
+  button, select, input{font-family:inherit;}
+  ::selection{background:var(--signal-400); color:var(--ink-950);}
+
+  .app{
+    max-width:1920px;
+    width:100%;
+    margin:0 auto;
+    height:100%;
+    height:100dvh;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+    overflow:hidden;
+  }
+
+  /* ---------- Header : the bulletin masthead ---------- */
+  header.masthead{
+    padding:18px 18px 14px;
+    border-bottom:1px solid var(--line-700);
+    position:sticky; top:0; z-index:20;
+    background:var(--masthead-bg);
+    backdrop-filter:blur(8px);
+    flex:none;
+  }
+  .masthead-row{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+  }
+  .brand{display:flex; align-items:center; gap:10px;}
+  .brand-mark{
+    width:34px; height:34px; flex:none; border-radius:9px;
+    background:linear-gradient(135deg, #38bdf8, #0284c7);
+    display:flex; align-items:center; justify-content:center;
+    position:relative; overflow:hidden;
+    box-shadow:0 2px 6px rgba(2,132,199,0.25);
+  }
+  .brand-mark svg{width:20px;height:20px;}
+  .brand-mark svg path{stroke:#ffffff;}
+  .brand-name{
+    font-family:var(--font-display); font-weight:700; font-size:19px; letter-spacing:-0.01em;
+    display:flex; flex-direction:column; line-height:1.05;
+    color:var(--fog-100);
+  }
+  .brand-name small{
+    font-family:var(--font-mono); font-weight:400; font-size:10px; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--fog-500); margin-top:3px;
+  }
+  .station-status{
+    display:flex; align-items:center; gap:8px;
+    font-family:var(--font-mono); font-size:11px; color:var(--fog-500);
+    padding:6px 10px; border:1px solid var(--line-700); border-radius:100px;
+    background:var(--panel-800);
+    white-space:nowrap;
+  }
+  .station-status .dot{width:7px; height:7px; border-radius:50%; background:var(--green); box-shadow:0 0 0 3px rgba(46,158,91,0.18);}
+  .station-status .dot.offline{background:var(--fog-500); box-shadow:none;}
+
+  .isobar-wrap{margin-top:12px; height:22px; overflow:hidden; opacity:0.55;}
+  .isobar-wrap svg{width:200%; height:100%;}
+  @media (prefers-reduced-motion:no-preference){
+    .isobar-line{animation:drift 14s linear infinite;}
+  }
+  @keyframes drift{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
+
+  /* ---------- Quick intent chips ---------- */
+  .chip-row{
+    display:flex; gap:8px; padding:12px 18px; overflow-x:auto;
+    border-bottom:1px solid var(--line-700);
+    scrollbar-width:none;
+    flex:none;
+  }
+  .chip-row::-webkit-scrollbar{display:none;}
+  .chip{
+    flex:none; font-family:var(--font-mono); font-size:12px; letter-spacing:0.02em;
+    color:var(--chip-text); background:var(--chip-bg); border:1px solid var(--chip-border);
+    padding:8px 13px; border-radius:8px; cursor:pointer; white-space:nowrap;
+    box-shadow:0 1px 2px rgba(0,0,0,0.03);
+    transition:border-color .15s ease, color .15s ease, transform .1s ease, background-color .15s ease;
+  }
+  .chip:hover{border-color:var(--chip-hover-border); color:var(--chip-hover-text);}
+  .chip:active{transform:scale(0.97);}
+
+  /* ---------- Chat transcript ---------- */
+  main.transcript{
+    flex:1 1 0%;
+    min-height:0;
+    padding:20px 18px 14px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:thin;
+    scrollbar-color:var(--line-700) transparent;
+  }
+  main.transcript::-webkit-scrollbar{
+    width:6px;
+  }
+  main.transcript::-webkit-scrollbar-track{
+    background:transparent;
+  }
+  main.transcript::-webkit-scrollbar-thumb{
+    background:var(--line-700);
+    border-radius:999px;
+  }
+  main.transcript::-webkit-scrollbar-thumb:hover{
+    background:var(--fog-500);
+  }
+  .msg{max-width:86%; display:flex; flex-direction:column; gap:6px; animation:rise .28s ease both;}
+  @keyframes rise{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+  .msg.user{align-self:flex-end; align-items:flex-end;}
+  .msg.bot{align-self:flex-start; align-items:flex-start;}
+  .bubble{
+    padding:12px 15px; border-radius:14px; font-size:14.5px; line-height:1.5;
+    /* Replies (e.g. bulleted cyclone lists) use real newlines/"•" separators
+       in the text. Without this, default white-space:normal collapses every
+       newline into a single space, squashing multi-point replies into one
+       unreadable run-on paragraph. */
+    white-space:pre-wrap;
+  }
+  .msg.user .bubble{
+    background:var(--user-bubble-bg);
+    color:var(--user-bubble-text);
+    border-bottom-right-radius:4px;
+    font-weight:500;
+    box-shadow:0 2px 8px rgba(37,99,235,0.15);
+  }
+  .msg.bot .bubble{
+    background:var(--bot-bubble-bg);
+    color:var(--bot-bubble-text);
+    border:1px solid var(--bot-bubble-border);
+    border-bottom-left-radius:4px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.04);
+  }
+  .msg-meta{font-family:var(--font-mono); font-size:10px; color:var(--fog-500); padding:0 4px;}
+
+  /* ---------- Bulletin card (signature element) ---------- */
+  .bulletin{
+    width:100%; margin-top:2px;
+    border:1px solid var(--card-border); border-radius:12px; overflow:hidden;
+    background:var(--card-bg);
+    box-shadow:0 4px 14px rgba(0,0,0,0.05);
+  }
+  .bulletin-head{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:9px 13px; border-bottom:1px dashed var(--line-700);
+    font-family:var(--font-mono); font-size:11px; color:var(--fog-300);
+  }
+  .bulletin-head .loc{font-weight:600; color:var(--fog-100); text-transform:uppercase; letter-spacing:0.03em;}
+  .alert-pill{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase; letter-spacing:0.06em;
+    padding:4px 9px; border-radius:100px; border:1px solid var(--line-700);
+    background:var(--panel-800); color:var(--fog-100);
+  }
+  .alert-pill .dot{width:8px; height:8px; border-radius:50%;}
+  .alert-green .dot{background:var(--green);} .alert-yellow .dot{background:var(--yellow);}
+  .alert-orange .dot{background:var(--orange);} .alert-red .dot{background:var(--red);}
+  .bulletin-body{padding:12px 13px; display:flex; flex-direction:column; gap:10px;}
+  .stat-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(84px,1fr)); gap:10px;}
+  .stat{display:flex; flex-direction:column; gap:2px;}
+  .stat .k{font-family:var(--font-mono); font-size:9.5px; text-transform:uppercase; letter-spacing:0.08em; color:var(--fog-500);}
+  .stat .v{font-family:var(--font-mono); font-size:15px; font-weight:600; color:var(--fog-100);}
+  .hazard-chips{display:flex; flex-wrap:wrap; gap:6px;}
+  .data-source{
+    margin-top:8px; font-size:11px; color:var(--fog-500); line-height:1.35;
+    border-top:1px solid var(--line-700); padding-top:6px;
+  }
+  .status-strip{
+    display:flex; flex-wrap:wrap; gap:6px; justify-content:center;
+    padding:6px 10px; font-size:11px;
+    border-bottom:1px solid var(--line-700);
+    background:var(--panel-800);
+    color:var(--fog-500);
+    flex:none;
+  }
+  .pill-ok{background:var(--pill-ok-bg); color:var(--pill-ok-text); border:1px solid var(--pill-ok-border); border-radius:999px; padding:2px 8px; font-weight:500;}
+  .pill-warn{background:var(--pill-warn-bg); color:var(--pill-warn-text); border:1px solid var(--pill-warn-border); border-radius:999px; padding:2px 8px; font-weight:500;}
+  .pill-off{background:var(--pill-off-bg); color:var(--pill-off-text); border:1px solid var(--pill-off-border); border-radius:999px; padding:2px 8px;}
+  .demo-banner{
+    font-size:12px; padding:6px 12px; text-align:center;
+    border-bottom:1px solid var(--line-700);
+    background:var(--panel-800);
+    color:var(--fog-300);
+    flex:none;
+  }
+  .hazard-chip{
+    font-size:11px; padding:4px 9px; border-radius:100px;
+    background:var(--hazard-bg); border:1px solid var(--hazard-border); color:var(--hazard-text);
+    font-weight:500;
+  }
+  .coords{font-family:var(--font-mono); font-size:10px; color:var(--fog-500);}
+  .timeline{display:flex; gap:5px; padding-top:2px;}
+  .timeline .t-day{flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;}
+  .timeline .t-dot{width:100%; height:6px; border-radius:4px;}
+  .timeline .t-label{font-family:var(--font-mono); font-size:8.5px; color:var(--fog-500);}
+  .advisory-list{margin:0; padding-left:18px; font-size:13px; color:var(--fog-100); display:flex; flex-direction:column; gap:5px;}
+  .forecast-list{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+    margin-top:10px;
+  }
+  .forecast-title{
+    font-family:var(--font-mono);
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:var(--fog-500);
+    margin-bottom:2px;
+  }
+  .forecast-row{
+    display:grid;
+    grid-template-columns:72px minmax(86px,1fr) 78px 78px;
+    gap:8px;
+    align-items:center;
+    padding:8px 9px;
+    border:1px solid var(--line-700);
+    border-radius:9px;
+    background:var(--panel-800);
+  }
+  .forecast-date{font-family:var(--font-mono);font-size:11px;font-weight:600;color:var(--fog-100);}
+  .forecast-condition{font-size:11px;color:var(--fog-300);line-height:1.25;}
+  .forecast-temp{font-family:var(--font-mono);font-size:11px;font-weight:600;color:var(--fog-100);text-align:right;}
+  .forecast-rain{font-family:var(--font-mono);font-size:10px;color:var(--signal-400);text-align:right;}
+  @media(max-width:600px){
+    .forecast-row{grid-template-columns:58px minmax(70px,1fr) 65px 58px;gap:6px;padding:8px 7px;}
+    .forecast-date{font-size:10px;}
+    .forecast-condition{font-size:10px;}
+    .forecast-temp{font-size:10px;}
+    .forecast-rain{font-size:9px;}
+  }
+
+  .typing{display:flex; gap:4px; padding:6px 2px;}
+  .typing span{width:6px; height:6px; border-radius:50%; background:var(--fog-500); animation:bounce 1.2s infinite ease-in-out;}
+  .typing span:nth-child(2){animation-delay:.15s;} .typing span:nth-child(3){animation-delay:.3s;}
+  @keyframes bounce{0%,80%,100%{transform:translateY(0); opacity:.5;} 40%{transform:translateY(-4px); opacity:1;}}
+
+  /* ---------- Composer ---------- */
+  .composer{
+    flex:none;
+    position:sticky;
+    bottom:0;
+    z-index:20;
+    padding:12px 14px calc(14px + env(safe-area-inset-bottom));
+    border-top:1px solid var(--line-700);
+    background:var(--composer-bg);
+    box-shadow:0 -4px 20px rgba(0,0,0,0.18);
+    display:flex; flex-direction:column; gap:8px;
+  }
+  [data-theme="light"] .composer{
+    box-shadow:0 -4px 20px rgba(15,23,42,0.06);
+  }
+  .composer-row{display:flex; align-items:flex-end; gap:8px;}
+  select.lang-select{
+    background:var(--input-bg); color:var(--input-text); border:1px solid var(--input-border);
+    border-radius:9px; padding:9px 8px; font-size:12px; font-family:var(--font-mono); max-width:92px;
+    outline:none; cursor:pointer;
+  }
+  select.lang-select:focus{border-color:var(--signal-500);}
+  .input-wrap{
+    flex:1; display:flex; align-items:center; background:var(--input-bg);
+    border:1px solid var(--input-border); border-radius:12px; padding:4px 4px 4px 13px;
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  .input-wrap:focus-within{border-color:var(--signal-500); box-shadow:0 0 0 3px rgba(37,99,235,0.12);}
+  #textInput{
+    flex:1; border:none; background:transparent; color:var(--input-text); font-size:14.5px;
+    padding:9px 4px; outline:none; font-family:var(--font-body);
+  }
+  #textInput::placeholder{color:var(--input-placeholder);}
+  .icon-btn{
+    width:36px; height:36px; border-radius:9px; border:none; background:transparent;
+    color:var(--fog-300); display:flex; align-items:center; justify-content:center; cursor:pointer;
+    transition:background .15s ease, color .15s ease;
+  }
+  .icon-btn:hover{background:var(--line-700); color:var(--fog-100);}
+  .icon-btn.mic.listening{color:var(--red); animation:pulse-ring 1.1s infinite;}
+  @keyframes pulse-ring{
+    0%{box-shadow:0 0 0 0 rgba(214,83,74,0.4);} 70%{box-shadow:0 0 0 9px rgba(214,83,74,0);} 100%{box-shadow:0 0 0 0 rgba(214,83,74,0);}
+  }
+  .send-btn{
+    width:40px; height:40px; border-radius:10px; border:none; cursor:pointer;
+    background:var(--send-btn-bg); color:var(--send-btn-color); display:flex; align-items:center; justify-content:center;
+    flex:none; transition:transform .1s ease, opacity .15s ease, background .15s ease;
+  }
+  .send-btn:active{transform:scale(0.94);}
+  .send-btn:disabled{opacity:0.4; cursor:default;}
+  .composer-sub{
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
+    font-family:var(--font-mono); font-size:10.5px; color:var(--fog-500);
+    flex-wrap:wrap;
+  }
+  .subtle-btn{
+    background:none; border:none; color:var(--fog-500); font-family:var(--font-mono); font-size:10.5px;
+    cursor:pointer; display:flex; align-items:center; gap:5px; padding:4px 6px; border-radius:6px;
+    transition:color .15s ease, background-color .15s ease;
+  }
+  .subtle-btn:hover{color:var(--signal-500); background:var(--theme-btn-hover-bg);}
+  .subtle-btn svg{width:12px;height:12px;}
+
+  .map-wrap{margin-top:8px; border-radius:12px; overflow:hidden; border:1px solid var(--line-700);}
+  .map-wrap iframe{width:100%; height:min(320px,42vh); min-height:200px; border:0; display:block;}
+  @media(max-width:600px){ .map-wrap iframe{ height:min(260px,38vh); } }
+  .theme-btn{
+    cursor:pointer; border:1px solid var(--theme-btn-border); background:var(--toggle-btn-bg);
+    color:var(--toggle-btn-text); border-radius:999px; padding:4px 10px; font-size:11.5px; font-family:var(--font-mono);
+    transition:border-color .15s ease, color .15s ease, background .15s ease;
+  }
+  .theme-btn:hover{border-color:var(--theme-btn-hover-border); color:var(--fog-100); background:var(--theme-btn-hover-bg);}
+  #speakToggle{
+    background:var(--toggle-btn-bg); border:1px solid var(--toggle-btn-border);
+    color:var(--toggle-btn-text); border-radius:6px; padding:4px 9px; font-family:var(--font-mono);
+    font-size:10.5px; cursor:pointer; transition:all .15s ease;
+  }
+  #speakToggle:hover{border-color:var(--signal-500); color:var(--fog-100);}
+
+
+  /* ---------- Hackathon command center ---------- */
+  .workspace{
+    flex:1; min-height:0; display:grid; grid-template-columns:minmax(0,1fr);
+    gap:0; overflow:hidden; border-bottom:1px solid var(--line-700);
+  }
+  .workspace .transcript{min-width:0; min-height:0;}
+
+  /* Quick Modules is now a single toggle button that opens a floating
+     drawer with the module cards, instead of a permanently-docked side
+     column. This also means the modules are reachable on mobile, where
+     the old fixed side column was hidden entirely (display:none). */
+  .quick-toggle{
+    display:inline-flex; align-items:center; gap:6px; font:600 12px var(--font-display);
+    color:var(--fog-100); background:var(--panel-800); border:1px solid var(--line-700);
+    border-radius:999px; padding:7px 12px; cursor:pointer; transition:border-color .15s ease, background .15s ease;
+  }
+  .quick-toggle:hover{border-color:var(--signal-400); background:var(--panel-700);}
+  .quick-toggle .qt-count{
+    display:inline-flex; align-items:center; justify-content:center; min-width:16px; height:16px;
+    padding:0 4px; border-radius:999px; background:var(--signal-500); color:#fff; font-size:10px; font-weight:700;
+  }
+
+  .quick-backdrop{
+    display:none; position:fixed; inset:0; z-index:55; background:rgba(0,0,0,.35); backdrop-filter:blur(2px);
+  }
+  .quick-backdrop.open{display:block;}
+
+  .quick-panel{
+    display:none; position:fixed; top:0; right:0; z-index:56; height:100%; width:min(320px, 88vw);
+    overflow-y:auto; padding:16px 14px; border-left:1px solid var(--line-700);
+    background:linear-gradient(180deg, rgba(21,36,40,.98), rgba(11,20,23,.98));
+    box-shadow:-8px 0 24px rgba(0,0,0,.35);
+  }
+  .quick-panel.open{display:block;}
+  .quick-panel-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;}
+  .quick-close{
+    background:none; border:1px solid var(--line-700); border-radius:8px; color:var(--fog-100);
+    width:26px; height:26px; cursor:pointer; font-size:14px; line-height:1;
+  }
+  .quick-close:hover{border-color:var(--signal-400);}
+  .quick-title{font-family:var(--font-display); font-size:14px; font-weight:700; margin:0; display:flex; gap:6px; align-items:center;}
+  .module-grid{display:grid; grid-template-columns:1fr; gap:8px;}
+  .module-card{
+    border:1px solid var(--line-700); border-radius:10px; padding:10px 11px; min-height:0;
+    background:var(--panel-800); cursor:pointer; transition:transform .15s ease,border-color .15s ease,background .15s ease;
+    text-align:left; color:var(--fog-100);
+  }
+  .module-card:hover{transform:translateY(-1px); border-color:var(--signal-400); background:var(--panel-700);}
+  .module-card .m-head{display:flex;align-items:center;gap:6px;font-weight:700;font-size:13px;margin-bottom:4px;}
+  .module-card .m-copy{font-size:11px;line-height:1.35;color:var(--fog-300);}
+  .module-card.aqi{border-color:rgba(46,158,91,.8);background:linear-gradient(145deg,rgba(46,158,91,.18),var(--panel-800));}
+  .module-card.rain{border-color:rgba(79,168,216,.8);background:linear-gradient(145deg,rgba(79,168,216,.18),var(--panel-800));}
+  .module-card.energy{border-color:rgba(132,204,22,.7);background:linear-gradient(145deg,rgba(101,163,13,.18),var(--panel-800));}
+  .module-card.construction{border-color:rgba(249,115,22,.75);background:linear-gradient(145deg,rgba(249,115,22,.17),var(--panel-800));}
+  .module-card.hinglish{border-color:rgba(34,211,238,.7);background:linear-gradient(145deg,rgba(6,182,212,.16),var(--panel-800));}
+  .suggestion-bar{display:flex;gap:8px;align-items:center;padding:10px 18px;overflow-x:auto;border-top:1px solid var(--line-700);background:var(--ink-900);scrollbar-width:none;flex:none;}
+  .suggestion-bar::-webkit-scrollbar{display:none;}
+  .suggestion-label{font-size:12px;font-weight:600;color:var(--fog-300);white-space:nowrap;margin-right:2px;}
+  .suggestion{font-size:11.5px;color:var(--chip-text);background:var(--chip-bg);border:1px solid var(--chip-border);border-radius:8px;padding:8px 11px;white-space:nowrap;cursor:pointer;}
+  .suggestion:hover{border-color:var(--signal-400);color:var(--fog-100);}
+  .rain-legend{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px;}
+  .rain-level{font-size:9px;border-radius:999px;padding:2px 6px;border:1px solid var(--line-700);color:var(--fog-300);}
+  .rain-level.mod{border-color:rgba(79,168,216,.6)} .rain-level.high{border-color:rgba(224,121,60,.7)} .rain-level.vhigh{border-color:rgba(214,83,74,.7)}
+
+  /* ---------- Renewable Energy: compact points, no card ---------- */
+  .energy-points{
+    margin:10px 2px 2px;
+    padding:2px 2px 4px 2px;
+    color:var(--fog-100);
+    font-size:13px;
+    line-height:1.55;
+  }
+  .energy-points .energy-heading{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    font-size:15px;
+    font-weight:800;
+    color:var(--fog-100);
+    margin-bottom:7px;
+  }
+  .energy-points .energy-heading .bolt{
+    font-size:18px;
+  }
+  .energy-points ul{
+    list-style:none;
+    padding:0;
+    margin:0;
+  }
+  .energy-points li{
+    margin:6px 0;
+    padding-left:16px;
+    position:relative;
+  }
+  .energy-points li::before{
+    content:"•";
+    position:absolute;
+    left:2px;
+    top:0;
+    font-size:17px;
+    color:var(--signal-400);
+  }
+  .energy-points .energy-label{
+    font-weight:750;
+    color:var(--fog-100);
+  }
+  .energy-points .energy-value{
+    font-weight:650;
+  }
+  .energy-points .energy-sub{
+    display:block;
+    margin-top:1px;
+    color:var(--fog-400);
+    font-size:11.5px;
+  }
+  .energy-points .energy-score{
+    font-weight:800;
+  }
+  .energy-points .energy-note{
+    margin-top:8px;
+    padding-top:7px;
+    border-top:1px dashed var(--line-700);
+    color:var(--fog-500);
+    font-size:10.5px;
+  }
+  .energy-points .energy-source{
+    margin-top:5px;
+    color:var(--fog-500);
+    font-size:10.5px;
+  }
+
+  /* Tablet: keep the compact side panel */
+  @media(max-width:1100px) and (min-width:901px){
+    .workspace{grid-template-columns:minmax(0,1fr) 200px}
+  }
+  /* Mobile: single column, main output (chat) gets the full width/height */
+  @media(max-width:900px){
+    .workspace{grid-template-columns:1fr}
+    .app{max-width:100%}
+    .suggestion-bar{padding-inline:12px}
+    .msg{max-width:94%;}
+    main.transcript{padding:16px 12px 12px;}
+
+    /* The header row (logo, status chip, Quick Modules, Login) is a
+       single no-wrap flex row. On phone-width screens the status chip's
+       nowrap text ("backend offline — set API endpoint") is long enough
+       to push the Quick Modules and Login buttons past the right edge,
+       where the .app container's overflow:hidden clips them completely —
+       they aren't hidden by CSS, they're just off-screen and unreachable.
+       Wrap the row onto two lines and let the status chip truncate
+       instead of forcing everything else out of view. */
+    .masthead-row{flex-wrap:wrap; row-gap:10px;}
+    .brand{flex:1 1 auto; min-width:0;}
+    .station-status{
+      order:3; flex:1 1 100%;
+      max-width:100%; overflow:hidden; text-overflow:ellipsis;
+    }
+    .quick-toggle{order:4;}
+    .theme-btn{order:2;}
+  }
+  @media (max-width:480px){
+    .brand-name{font-size:17px;}
+    .stat-grid{grid-template-columns:repeat(3,1fr);}
+    .bubble{font-size:14px; padding:11px 13px;}
+    main.transcript{padding:14px 10px 10px; gap:12px;}
+  }
+
+
+  /* ---------- Live location ---------- */
+  .mission-bar{display:grid;grid-template-columns:1.5fr repeat(2,1fr);gap:10px;padding:10px 18px;border-bottom:1px solid var(--line-700);background:linear-gradient(90deg,rgba(37,99,235,.10),rgba(46,158,91,.08),transparent);flex:none;}
+  .mission-card{min-width:0;border:1px solid var(--line-700);border-radius:11px;background:var(--panel-800);padding:9px 11px;}
+  .mission-k{display:block;font:10px var(--font-mono);color:var(--fog-500);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;}
+  .mission-v{font:600 13px var(--font-display);color:var(--fog-100);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .mission-live{color:#7ddea6;}
+  .module-card .m-badge{display:inline-flex;font:8px var(--font-mono);padding:2px 5px;border-radius:999px;border:1px solid var(--line-700);color:var(--fog-500);margin-top:5px;}
+  @media(max-width:900px){.mission-bar{grid-template-columns:repeat(2,1fr)}}
+
+  :focus-visible{outline:2px solid var(--signal-400); outline-offset:2px;}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="masthead">
+    <div class="masthead-row">
+      <div class="brand">
+        <div class="brand-mark">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 15a4 4 0 0 1 1.2-7.86A5.5 5.5 0 0 1 15.8 8.06 4.5 4.5 0 0 1 15 17H6a2 2 0 0 1-2-2Z" stroke="#ffffff" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="brand-name">WeatherGPT<small id="langNameTag">EN · Conversational met engine</small></div>
+      </div>
+      <div class="station-status" id="stationStatus">
+        <span class="dot" id="statusDot"></span><span id="statusText">checking backend…</span>
+      </div>
+      <button class="quick-toggle" id="quickToggleBtn" aria-haspopup="true" aria-expanded="false" aria-controls="quickPanel">
+        <span data-i18n="panelTitle">🧭 Quick Modules</span><span class="qt-count" id="quickCount">5</span>
+      </button>
+      <button class="theme-btn" id="loginBtn" onclick="openLoginModal()">Login</button>
+    </div>
+    <div class="isobar-wrap" aria-hidden="true">
+      <svg viewBox="0 0 800 40" preserveAspectRatio="none" class="isobar-line">
+        <path d="M0 20 C 40 5, 80 35, 120 20 S 200 5, 240 20 S 320 35, 360 20 S 440 5, 480 20 S 560 35, 600 20 S 680 5, 720 20 S 800 35, 840 20"
+          stroke="#4FA8D8" stroke-width="1.2" fill="none" opacity="0.9"/>
+        <path d="M0 26 C 40 14, 80 38, 120 26 S 200 14, 240 26 S 320 38, 360 26 S 440 14, 480 26 S 560 38, 600 26 S 680 14, 720 26 S 800 38, 840 26"
+          stroke="#2E9E5B" stroke-width="1" fill="none" opacity="0.5"/>
+      </svg>
+    </div>
+  </header>
+
+  <div id="loginModal" style="display:none; position:fixed; inset:0; z-index:60; background:var(--modal-overlay); align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+    <div style="background:var(--modal-bg); border:1px solid var(--modal-border); border-radius:14px; padding:20px; width:90%; max-width:340px; color:var(--fog-100); box-shadow:0 20px 25px -5px rgba(0,0,0,0.2);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <strong id="loginTitle">Log in for cyclone SMS alerts</strong>
+        <button class="theme-btn" onclick="closeLoginModal()">✕</button>
+      </div>
+      <div id="loginStep1">
+        <p style="font-size:13px; color:var(--fog-500); margin:4px 0 10px;">We'll text you a one-time code — no password needed.</p>
+        <input id="loginPhone" type="tel" placeholder="+91XXXXXXXXXX" style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--input-text); margin-bottom:10px; box-sizing:border-box; outline:none;">
+        <button class="theme-btn" style="width:100%; padding:8px; background:var(--signal-500); color:#ffffff; border:none; font-weight:600;" onclick="requestOtp()">Send code</button>
+      </div>
+      <div id="loginStep2" style="display:none;">
+        <p style="font-size:13px; color:var(--fog-500); margin:4px 0 10px;">Enter the 6-digit code we sent.</p>
+        <input id="loginOtp" type="text" inputmode="numeric" maxlength="6" placeholder="123456" style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--input-text); margin-bottom:10px; box-sizing:border-box; outline:none;">
+        <button class="theme-btn" style="width:100%; padding:8px; background:var(--signal-500); color:#ffffff; border:none; font-weight:600;" onclick="verifyOtpAndSubscribe()">Verify & enable cyclone alerts</button>
+      </div>
+      <div id="loginMsg" style="font-size:12px; color:var(--fog-500); margin-top:8px;"></div>
+    </div>
+  </div>
+
+  <!-- Demo banner, status strip and mission bar removed from main interface for cleaner Command Center look -->
+  <div class="status-strip" id="statusStrip" style="display:none">Checking live integrations…</div>
+  <section class="mission-bar" aria-label="Live weather intelligence dashboard" style="display:none">
+    <div class="mission-card"><span class="mission-k">Live Position</span><span class="mission-v mission-live" id="liveLocationValue">Waiting for GPS…</span></div>
+    <div class="mission-card"><span class="mission-k">GPS Accuracy</span><span class="mission-v" id="gpsAccuracyValue">—</span></div>
+    <div class="mission-card"><span class="mission-k">Location Checks</span><span class="mission-v" id="locationCheckValue">0</span></div>
+  </section>
+  <div class="workspace">
+    <main class="transcript" id="transcript"></main>
+  </div>
+
+  <div class="quick-backdrop" id="quickBackdrop"></div>
+  <aside class="quick-panel" id="quickPanel" aria-label="Quick modules" aria-hidden="true">
+    <div class="quick-panel-head">
+      <h2 class="quick-title" data-i18n="panelTitle">🧭 Quick Modules</h2>
+      <button class="quick-close" id="quickCloseBtn" aria-label="Close quick modules">✕</button>
+    </div>
+    <div class="module-grid">
+      <button class="module-card aqi" data-q="AQI and air quality for my location"><span class="m-head" data-i18n="aqi.head">🌫️ AQI</span><span class="m-copy" data-i18n="aqi.copy">Check Air Quality Index and PM2.5 / PM10 conditions.</span></button>
+      <button class="module-card rain" data-q="Rainfall risk for my location: classify moderate, high, or very high"><span class="m-head" data-i18n="rain.head">🌧️ Rainfall</span><span class="m-copy" data-i18n="rain.copy">Moderate / High / Very High rainfall forecast.</span><span class="rain-legend"><span class="rain-level mod" data-i18n="rain.mod">Moderate</span><span class="rain-level high" data-i18n="rain.high">High</span><span class="rain-level vhigh" data-i18n="rain.vhigh">Very High</span></span></button>
+      <button class="module-card energy" data-q="Renewable energy forecast for my location: solar and wind generation outlook"><span class="m-head" data-i18n="energy.head">⚡ Renewable Energy</span><span class="m-copy" data-i18n="energy.copy">Solar / wind generation forecast from NWP radiation and wind data.</span></button>
+      <button class="module-card construction" data-q="Construction contingency plan and weather risk for my location"><span class="m-head" data-i18n="construction.head">🏗️ Construction</span><span class="m-copy" data-i18n="construction.copy">Contingency planning, crane/site weather risk and work-window alerts.</span><span class="m-badge" data-i18n="construction.badge">LIVE GPS CHECK</span></button>
+      <button class="module-card hinglish" data-lang="hinglish"><span class="m-head" data-i18n="hinglish.head">🗣️ Hinglish Mode</span><span class="m-copy" data-i18n="hinglish.copy">Hinglish mein baat karein — Hindi + English replies.</span></button>
+    </div>
+  </aside>
+
+  <div class="composer">
+    <div class="composer-row">
+      <select class="lang-select" id="langSelect" aria-label="Reply language"></select>
+      <div class="input-wrap">
+        <input id="textInput" type="text" placeholder="Ask about weather, AQI, routes, energy, construction… (Hinglish supported)" autocomplete="off" />
+        <button class="icon-btn mic" id="micBtn" title="Speak your question" aria-label="Voice input">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Z" stroke="currentColor" stroke-width="1.6"/><path d="M19 11a7 7 0 0 1-14 0M12 18v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <button class="send-btn" id="sendBtn" aria-label="Send message">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M4 12l16-7-6 16-2.5-6.5L4 12Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="composer-sub">
+      <button class="subtle-btn" id="locBtn">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="9" r="2.3" stroke="currentColor" stroke-width="1.6"/></svg>
+        Use my location
+      </button>
+      <button class="subtle-btn theme-btn" id="themeBtn">🌙 Dark</button>
+      <button id="speakToggle">🔊 Read replies aloud: OFF</button>
+      <button class="subtle-btn" id="apiCfgBtn">⚙ API endpoint</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  const DEFAULT_LANGS = {
+    en:{name:"English", speech:"en-IN"}, hinglish:{name:"Hinglish", speech:"hi-IN"}, hi:{name:"हिन्दी", speech:"hi-IN"},
+    bn:{name:"বাংলা", speech:"bn-IN"}, ta:{name:"தமிழ்", speech:"ta-IN"},
+    te:{name:"తెలుగు", speech:"te-IN"}, mr:{name:"मराठी", speech:"mr-IN"},
+    gu:{name:"ગુજરાતી", speech:"gu-IN"}, pa:{name:"ਪੰਜਾਬੀ", speech:"pa-IN"},
+    kn:{name:"ಕನ್ನಡ", speech:"kn-IN"}, ml:{name:"മലയാളം", speech:"ml-IN"},
+    or:{name:"ଓଡ଼ିଆ", speech:"or-IN"}, ur:{name:"اردو", speech:"ur-IN"}
+  };
+
+  // Translations for the "Quick Modules" sidebar (AQI, Rainfall,
+  // Renewable Energy, Construction, Hinglish Mode). Falls back to English
+  // for any language/key not covered here.
+  const PANEL_I18N = {
+    en: {
+      panelTitle: "🧭 Quick Modules",
+      "aqi.head": "🌫️ AQI", "aqi.copy": "Check Air Quality Index and PM2.5 / PM10 conditions.",
+      "rain.head": "🌧️ Rainfall", "rain.copy": "Moderate / High / Very High rainfall forecast.",
+      "rain.mod": "Moderate", "rain.high": "High", "rain.vhigh": "Very High",
+      "energy.head": "⚡ Renewable Energy", "energy.copy": "Solar / wind generation forecast from NWP radiation and wind data.",
+      "construction.head": "🏗️ Construction", "construction.copy": "Contingency planning, crane/site weather risk and work-window alerts.", "construction.badge": "LIVE GPS CHECK",
+      "hinglish.head": "🗣️ Hinglish Mode", "hinglish.copy": "Hinglish mein baat karein — Hindi + English replies.",
+      "aqiCard.label": "AQI (CPCB)", "aqiCard.dominant": "Dominant", "aqiCard.instant": "Instant-hour reading: {value} (24h/8h rolling average shown above — same method Google/SAFAR use)", "aqiCategory.Good": "Good", "aqiCategory.Satisfactory": "Satisfactory", "aqiCategory.Moderate": "Moderate", "aqiCategory.Poor": "Poor", "aqiCategory.VeryPoor": "Very Poor", "aqiCategory.Severe": "Severe", "aqiCategory.Unknown": "Unknown"
+    },
+    hinglish: {
+      panelTitle: "🧭 Quick Modules",
+      "aqi.head": "🌫️ AQI", "aqi.copy": "Apne location ka Air Quality Index aur PM2.5 / PM10 conditions check karein.",
+      "rain.head": "🌧️ Baarish", "rain.copy": "Moderate / High / Very High baarish ka forecast.",
+      "rain.mod": "Moderate", "rain.high": "High", "rain.vhigh": "Very High",
+      "energy.head": "⚡ Renewable Energy", "energy.copy": "NWP radiation aur wind data se solar / wind generation ka forecast.",
+      "construction.head": "🏗️ Construction", "construction.copy": "Contingency planning, crane/site weather risk aur work-window alerts.", "construction.badge": "LIVE GPS CHECK",
+      "hinglish.head": "🗣️ Hinglish Mode", "hinglish.copy": "Hinglish mein baat karein — Hindi + English replies.",
+      "aqiCard.label": "AQI (CPCB)", "aqiCard.dominant": "Dominant", "aqiCard.instant": "Instant-hour reading: {value} (upar 24h/8h rolling average dikhaya gaya hai — Google/SAFAR jaisa method)", "aqiCategory.Good": "Achha", "aqiCategory.Satisfactory": "Santoshjanak", "aqiCategory.Moderate": "Moderate", "aqiCategory.Poor": "Kharab", "aqiCategory.VeryPoor": "Bahut Kharab", "aqiCategory.Severe": "Gambhir", "aqiCategory.Unknown": "Unknown"
+    },
+    hi: {
+      panelTitle: "🧭 त्वरित मॉड्यूल",
+      "aqi.head": "🌫️ वायु गुणवत्ता सूचकांक", "aqi.copy": "अपने स्थान के लिए वायु गुणवत्ता सूचकांक और PM2.5 / PM10 स्थिति जाँचें।",
+      "rain.head": "🌧️ वर्षा", "rain.copy": "मध्यम / अधिक / अत्यधिक वर्षा का पूर्वानुमान।",
+      "rain.mod": "मध्यम", "rain.high": "अधिक", "rain.vhigh": "अत्यधिक",
+      "energy.head": "⚡ नवीकरणीय ऊर्जा", "energy.copy": "NWP विकिरण और पवन डेटा से सौर / पवन उत्पादन पूर्वानुमान।",
+      "construction.head": "🏗️ निर्माण", "construction.copy": "आकस्मिक योजना, क्रेन/साइट मौसम जोखिम और कार्य-विंडो अलर्ट।", "construction.badge": "लाइव GPS जाँच",
+      "hinglish.head": "🗣️ हिंग्लिश मोड", "hinglish.copy": "हिंग्लिश में बात करें — हिंदी + अंग्रेज़ी उत्तर।",
+      "aqiCard.label": "वायु गुणवत्ता सूचकांक (CPCB)", "aqiCard.dominant": "प्रमुख प्रदूषक", "aqiCard.instant": "तात्कालिक रीडिंग: {value} (ऊपर 24घं/8घं का औसत दिखाया गया है — Google/SAFAR जैसी विधि)", "aqiCategory.Good": "अच्छा", "aqiCategory.Satisfactory": "संतोषजनक", "aqiCategory.Moderate": "मध्यम", "aqiCategory.Poor": "खराब", "aqiCategory.VeryPoor": "बहुत खराब", "aqiCategory.Severe": "गंभीर", "aqiCategory.Unknown": "अज्ञात"
+    },
+    bn: {
+      panelTitle: "🧭 কুইক মডিউল",
+      "aqi.head": "🌫️ বায়ু গুণমান সূচক", "aqi.copy": "আপনার অবস্থানের বায়ু গুণমান সূচক এবং PM2.5 / PM10 পরিস্থিতি দেখুন।",
+      "rain.head": "🌧️ বৃষ্টিপাত", "rain.copy": "মাঝারি / বেশি / অতি বেশি বৃষ্টিপাতের পূর্বাভাস।",
+      "rain.mod": "মাঝারি", "rain.high": "বেশি", "rain.vhigh": "অতি বেশি",
+      "energy.head": "⚡ নবায়নযোগ্য শক্তি", "energy.copy": "NWP বিকিরণ ও বাতাসের তথ্য থেকে সৌর / বায়ু উৎপাদনের পূর্বাভাস।",
+      "construction.head": "🏗️ নির্মাণ", "construction.copy": "আকস্মিক পরিকল্পনা, ক্রেন/সাইট আবহাওয়ার ঝুঁকি এবং কর্ম-উইন্ডো সতর্কতা।", "construction.badge": "লাইভ GPS চেক",
+      "hinglish.head": "🗣️ হিংলিশ মোড", "hinglish.copy": "হিংলিশে কথা বলুন — হিন্দি + ইংরেজি উত্তর।",
+      "aqiCard.label": "বায়ু গুণমান সূচক (CPCB)", "aqiCard.dominant": "প্রধান দূষক", "aqiCard.instant": "তাৎক্ষণিক রিডিং: {value} (উপরে 24ঘ/8ঘ গড় দেখানো হয়েছে — Google/SAFAR-এর মতো পদ্ধতি)", "aqiCategory.Good": "ভালো", "aqiCategory.Satisfactory": "সন্তোষজনক", "aqiCategory.Moderate": "মাঝারি", "aqiCategory.Poor": "খারাপ", "aqiCategory.VeryPoor": "খুব খারাপ", "aqiCategory.Severe": "মারাত্মক", "aqiCategory.Unknown": "অজানা"
+    },
+    ta: {
+      panelTitle: "🧭 விரைவு தொகுதிகள்",
+      "aqi.head": "🌫️ காற்று தர குறியீடு", "aqi.copy": "உங்கள் இருப்பிடத்திற்கான காற்று தர குறியீடு மற்றும் PM2.5 / PM10 நிலைமைகளை சரிபார்க்கவும்.",
+      "rain.head": "🌧️ மழை", "rain.copy": "மிதமான / அதிக / மிக அதிக மழை முன்னறிவிப்பு.",
+      "rain.mod": "மிதமான", "rain.high": "அதிக", "rain.vhigh": "மிக அதிக",
+      "energy.head": "⚡ புதுப்பிக்கத்தக்க ஆற்றல்", "energy.copy": "NWP கதிர்வீச்சு மற்றும் காற்று தரவிலிருந்து சூரிய / காற்று உற்பத்தி முன்னறிவிப்பு.",
+      "construction.head": "🏗️ கட்டுமானம்", "construction.copy": "தற்செயல் திட்டமிடல், கிரேன்/தள வானிலை அபாயம் மற்றும் பணி-சாளர எச்சரிக்கைகள்.", "construction.badge": "லைவ் GPS சரிபார்ப்பு",
+      "hinglish.head": "🗣️ ஹிங்லிஷ் பயன்முறை", "hinglish.copy": "ஹிங்லிஷில் பேசுங்கள் — இந்தி + ஆங்கில பதில்கள்.",
+      "aqiCard.label": "காற்று தர குறியீடு (CPCB)", "aqiCard.dominant": "முதன்மை மாசுபடுத்தி", "aqiCard.instant": "உடனடி நேர அளவீடு: {value} (மேலே 24மணி/8மணி சராசரி காட்டப்பட்டுள்ளது — Google/SAFAR முறை)", "aqiCategory.Good": "நல்லது", "aqiCategory.Satisfactory": "திருப்திகரம்", "aqiCategory.Moderate": "மிதமான", "aqiCategory.Poor": "மோசமான", "aqiCategory.VeryPoor": "மிக மோசமான", "aqiCategory.Severe": "கடுமையான", "aqiCategory.Unknown": "தெரியவில்லை"
+    },
+    te: {
+      panelTitle: "🧭 త్వరిత మాడ్యూళ్ళు",
+      "aqi.head": "🌫️ గాలి నాణ్యత సూచిక", "aqi.copy": "మీ లొకేషన్ కోసం గాలి నాణ్యత సూచిక మరియు PM2.5 / PM10 పరిస్థితులను తనిఖీ చేయండి.",
+      "rain.head": "🌧️ వర్షపాతం", "rain.copy": "మధ్యస్థ / అధిక / అత్యధిక వర్షపాత సూచన.",
+      "rain.mod": "మధ్యస్థ", "rain.high": "అధిక", "rain.vhigh": "అత్యధిక",
+      "energy.head": "⚡ పునరుత్పాదక ఇంధనం", "energy.copy": "NWP రేడియేషన్ మరియు గాలి డేటా నుండి సౌర / పవన ఉత్పత్తి సూచన.",
+      "construction.head": "🏗️ నిర్మాణం", "construction.copy": "ఆకస్మిక ప్రణాళిక, క్రేన్/సైట్ వాతావరణ ప్రమాదం మరియు పని-విండో హెచ్చరికలు.", "construction.badge": "లైవ్ GPS చెక్",
+      "hinglish.head": "🗣️ హింగ్లిష్ మోడ్", "hinglish.copy": "హింగ్లిష్‌లో మాట్లాడండి — హిందీ + ఇంగ్లీష్ సమాధానాలు.",
+      "aqiCard.label": "గాలి నాణ్యత సూచిక (CPCB)", "aqiCard.dominant": "ప్రధాన కాలుష్యకారి", "aqiCard.instant": "తక్షణ రీడింగ్: {value} (పైన 24గం/8గం సగటు చూపబడింది — Google/SAFAR తరహా పద్ధతి)", "aqiCategory.Good": "మంచిది", "aqiCategory.Satisfactory": "సంతృప్తికరం", "aqiCategory.Moderate": "మధ్యస్థం", "aqiCategory.Poor": "చెడ్డది", "aqiCategory.VeryPoor": "చాలా చెడ్డది", "aqiCategory.Severe": "తీవ్రమైనది", "aqiCategory.Unknown": "తెలియదు"
+    },
+    mr: {
+      panelTitle: "🧭 क्विक मॉड्युल्स",
+      "aqi.head": "🌫️ हवा गुणवत्ता निर्देशांक", "aqi.copy": "तुमच्या स्थानाचा हवा गुणवत्ता निर्देशांक आणि PM2.5 / PM10 स्थिती तपासा.",
+      "rain.head": "🌧️ पाऊस", "rain.copy": "मध्यम / जास्त / अतिजास्त पावसाचा अंदाज.",
+      "rain.mod": "मध्यम", "rain.high": "जास्त", "rain.vhigh": "अतिजास्त",
+      "energy.head": "⚡ नवीकरणीय ऊर्जा", "energy.copy": "NWP प्रारण आणि वारा डेटावरून सौर / पवन निर्मितीचा अंदाज.",
+      "construction.head": "🏗️ बांधकाम", "construction.copy": "आकस्मिक नियोजन, क्रेन/साइट हवामान धोका आणि कार्य-विंडो सूचना.", "construction.badge": "लाइव्ह GPS तपासणी",
+      "hinglish.head": "🗣️ हिंग्लिश मोड", "hinglish.copy": "हिंग्लिशमध्ये बोला — हिंदी + इंग्रजी उत्तरे.",
+      "aqiCard.label": "हवा गुणवत्ता निर्देशांक (CPCB)", "aqiCard.dominant": "प्रमुख प्रदूषक", "aqiCard.instant": "तात्काळ रीडिंग: {value} (वर 24तास/8तास सरासरी दाखवली आहे — Google/SAFAR सारखी पद्धत)", "aqiCategory.Good": "चांगली", "aqiCategory.Satisfactory": "समाधानकारक", "aqiCategory.Moderate": "मध्यम", "aqiCategory.Poor": "वाईट", "aqiCategory.VeryPoor": "खूप वाईट", "aqiCategory.Severe": "गंभीर", "aqiCategory.Unknown": "अज्ञात"
+    },
+    gu: {
+      panelTitle: "🧭 ક્વિક મોડ્યુલ્સ",
+      "aqi.head": "🌫️ હવા ગુણવત્તા સૂચકાંક", "aqi.copy": "તમારા સ્થાન માટે હવા ગુણવત્તા સૂચકાંક અને PM2.5 / PM10 સ્થિતિ તપાસો.",
+      "rain.head": "🌧️ વરસાદ", "rain.copy": "મધ્યમ / વધુ / અતિ વધુ વરસાદની આગાહી.",
+      "rain.mod": "મધ્યમ", "rain.high": "વધુ", "rain.vhigh": "અતિ વધુ",
+      "energy.head": "⚡ પુનઃપ્રાપ્ય ઊર્જા", "energy.copy": "NWP રેડિયેશન અને પવન ડેટા પરથી સૌર / પવન ઉત્પાદનની આગાહી.",
+      "construction.head": "🏗️ બાંધકામ", "construction.copy": "આકસ્મિક આયોજન, ક્રેન/સાઇટ હવામાન જોખમ અને કાર્ય-વિન્ડો ચેતવણીઓ.", "construction.badge": "લાઇવ GPS ચેક",
+      "hinglish.head": "🗣️ હિંગ્લિશ મોડ", "hinglish.copy": "હિંગ્લિશમાં વાત કરો — હિન્દી + અંગ્રેજી જવાબો.",
+      "aqiCard.label": "હવા ગુણવત્તા સૂચકાંક (CPCB)", "aqiCard.dominant": "મુખ્ય પ્રદૂષક", "aqiCard.instant": "તાત્કાલિક રીડિંગ: {value} (ઉપર 24કલાક/8કલાકની સરેરાશ બતાવેલ છે — Google/SAFAR જેવી પદ્ધતિ)", "aqiCategory.Good": "સારું", "aqiCategory.Satisfactory": "સંતોષકારક", "aqiCategory.Moderate": "મધ્યમ", "aqiCategory.Poor": "ખરાબ", "aqiCategory.VeryPoor": "ખૂબ ખરાબ", "aqiCategory.Severe": "ગંભીર", "aqiCategory.Unknown": "અજ્ઞાત"
+    },
+    pa: {
+      panelTitle: "🧭 ਤੁਰੰਤ ਮੌਡਿਊਲ",
+      "aqi.head": "🌫️ ਹਵਾ ਗੁਣਵੱਤਾ ਸੂਚਕਾਂਕ", "aqi.copy": "ਆਪਣੇ ਟਿਕਾਣੇ ਲਈ ਹਵਾ ਗੁਣਵੱਤਾ ਸੂਚਕਾਂਕ ਅਤੇ PM2.5 / PM10 ਹਾਲਾਤ ਚੈੱਕ ਕਰੋ।",
+      "rain.head": "🌧️ ਮੀਂਹ", "rain.copy": "ਦਰਮਿਆਨਾ / ਵੱਧ / ਬਹੁਤ ਵੱਧ ਮੀਂਹ ਦੀ ਭਵਿੱਖਬਾਣੀ।",
+      "rain.mod": "ਦਰਮਿਆਨਾ", "rain.high": "ਵੱਧ", "rain.vhigh": "ਬਹੁਤ ਵੱਧ",
+      "energy.head": "⚡ ਨਵਿਆਉਣਯੋਗ ਊਰਜਾ", "energy.copy": "NWP ਰੇਡੀਏਸ਼ਨ ਅਤੇ ਹਵਾ ਡੇਟਾ ਤੋਂ ਸੌਰ / ਪੌਣ ਉਤਪਾਦਨ ਦੀ ਭਵਿੱਖਬਾਣੀ।",
+      "construction.head": "🏗️ ਉਸਾਰੀ", "construction.copy": "ਸੰਕਟਕਾਲੀਨ ਯੋਜਨਾ, ਕ੍ਰੇਨ/ਸਾਈਟ ਮੌਸਮ ਖ਼ਤਰਾ ਅਤੇ ਕੰਮ-ਵਿੰਡੋ ਚੇਤਾਵਨੀਆਂ।", "construction.badge": "ਲਾਈਵ GPS ਚੈੱਕ",
+      "hinglish.head": "🗣️ ਹਿੰਗਲਿਸ਼ ਮੋਡ", "hinglish.copy": "ਹਿੰਗਲਿਸ਼ ਵਿੱਚ ਗੱਲ ਕਰੋ — ਹਿੰਦੀ + ਅੰਗਰੇਜ਼ੀ ਜਵਾਬ।",
+      "aqiCard.label": "ਹਵਾ ਗੁਣਵੱਤਾ ਸੂਚਕਾਂਕ (CPCB)", "aqiCard.dominant": "ਮੁੱਖ ਪ੍ਰਦੂਸ਼ਕ", "aqiCard.instant": "ਤੁਰੰਤ ਰੀਡਿੰਗ: {value} (ਉੱਪਰ 24ਘੰਟੇ/8ਘੰਟੇ ਦੀ ਔਸਤ ਦਿਖਾਈ ਗਈ ਹੈ — Google/SAFAR ਵਰਗਾ ਤਰੀਕਾ)", "aqiCategory.Good": "ਵਧੀਆ", "aqiCategory.Satisfactory": "ਤਸੱਲੀਬਖ਼ਸ਼", "aqiCategory.Moderate": "ਦਰਮਿਆਨਾ", "aqiCategory.Poor": "ਖ਼ਰਾਬ", "aqiCategory.VeryPoor": "ਬਹੁਤ ਖ਼ਰਾਬ", "aqiCategory.Severe": "ਗੰਭੀਰ", "aqiCategory.Unknown": "ਅਣਜਾਣ"
+    },
+    kn: {
+      panelTitle: "🧭 ತ್ವರಿತ ಮಾಡ್ಯೂಲ್‌ಗಳು",
+      "aqi.head": "🌫️ ಗಾಳಿ ಗುಣಮಟ್ಟ ಸೂಚ್ಯಂಕ", "aqi.copy": "ನಿಮ್ಮ ಸ್ಥಳದ ಗಾಳಿಯ ಗುಣಮಟ್ಟ ಸೂಚ್ಯಂಕ ಮತ್ತು PM2.5 / PM10 ಸ್ಥಿತಿಗಳನ್ನು ಪರಿಶೀಲಿಸಿ.",
+      "rain.head": "🌧️ ಮಳೆ", "rain.copy": "ಮಧ್ಯಮ / ಹೆಚ್ಚು / ಅತಿ ಹೆಚ್ಚು ಮಳೆಯ ಮುನ್ಸೂಚನೆ.",
+      "rain.mod": "ಮಧ್ಯಮ", "rain.high": "ಹೆಚ್ಚು", "rain.vhigh": "ಅತಿ ಹೆಚ್ಚು",
+      "energy.head": "⚡ ನವೀಕರಿಸಬಹುದಾದ ಇಂಧನ", "energy.copy": "NWP ವಿಕಿರಣ ಮತ್ತು ಗಾಳಿ ದತ್ತಾಂಶದಿಂದ ಸೌರ / ಪವನ ಉತ್ಪಾದನೆಯ ಮುನ್ಸೂಚನೆ.",
+      "construction.head": "🏗️ ನಿರ್ಮಾಣ", "construction.copy": "ತುರ್ತು ಯೋಜನೆ, ಕ್ರೇನ್/ಸೈಟ್ ಹವಾಮಾನ ಅಪಾಯ ಮತ್ತು ಕೆಲಸ-ವಿಂಡೋ ಎಚ್ಚರಿಕೆಗಳು.", "construction.badge": "ಲೈವ್ GPS ಪರಿಶೀಲನೆ",
+      "hinglish.head": "🗣️ ಹಿಂಗ್ಲಿಷ್ ಮೋಡ್", "hinglish.copy": "ಹಿಂಗ್ಲಿಷ್‌ನಲ್ಲಿ ಮಾತನಾಡಿ — ಹಿಂದಿ + ಇಂಗ್ಲಿಷ್ ಉತ್ತರಗಳು.",
+      "aqiCard.label": "ಗಾಳಿ ಗುಣಮಟ್ಟ ಸೂಚ್ಯಂಕ (CPCB)", "aqiCard.dominant": "ಪ್ರಮುಖ ಮಾಲಿನ್ಯಕಾರಕ", "aqiCard.instant": "ತಕ್ಷಣದ ರೀಡಿಂಗ್: {value} (ಮೇಲೆ 24ಗಂ/8ಗಂ ಸರಾಸರಿ ತೋರಿಸಲಾಗಿದೆ — Google/SAFAR ಮಾದರಿ ವಿಧಾನ)", "aqiCategory.Good": "ಉತ್ತಮ", "aqiCategory.Satisfactory": "ತೃಪ್ತಿಕರ", "aqiCategory.Moderate": "ಮಧ್ಯಮ", "aqiCategory.Poor": "ಕಳಪೆ", "aqiCategory.VeryPoor": "ತುಂಬಾ ಕಳಪೆ", "aqiCategory.Severe": "ತೀವ್ರ", "aqiCategory.Unknown": "ಅಜ್ಞಾತ"
+    },
+    ml: {
+      panelTitle: "🧭 ക്വിക്ക് മൊഡ്യൂളുകൾ",
+      "aqi.head": "🌫️ വായു ഗുണനിലവാര സൂചിക", "aqi.copy": "നിങ്ങളുടെ സ്ഥലത്തെ വായു ഗുണനിലവാര സൂചികയും PM2.5 / PM10 അവസ്ഥകളും പരിശോധിക്കുക.",
+      "rain.head": "🌧️ മഴ", "rain.copy": "മിതമായ / കൂടുതൽ / അതിതീവ്രമായ മഴയുടെ പ്രവചനം.",
+      "rain.mod": "മിതമായ", "rain.high": "കൂടുതൽ", "rain.vhigh": "അതിതീവ്രം",
+      "energy.head": "⚡ പുനരുപയോഗ ഊർജ്ജം", "energy.copy": "NWP വികിരണവും കാറ്റ് ഡാറ്റയും ഉപയോഗിച്ചുള്ള സൗര / കാറ്റ് ഉൽപാദന പ്രവചനം.",
+      "construction.head": "🏗️ നിർമ്മാണം", "construction.copy": "ആകസ്മിക ആസൂത്രണം, ക്രെയിൻ/സൈറ്റ് കാലാവസ്ഥാ അപകടസാധ്യത, വർക്ക്-വിൻഡോ അലേർട്ടുകൾ.", "construction.badge": "ലൈവ് GPS ചെക്ക്",
+      "hinglish.head": "🗣️ ഹിംഗ്ലീഷ് മോഡ്", "hinglish.copy": "ഹിംഗ്ലീഷിൽ സംസാരിക്കൂ — ഹിന്ദി + ഇംഗ്ലീഷ് മറുപടികൾ.",
+      "aqiCard.label": "വായു ഗുണനിലവാര സൂചിക (CPCB)", "aqiCard.dominant": "പ്രധാന മലിനീകരണം", "aqiCard.instant": "തൽക്ഷണ റീഡിംഗ്: {value} (മുകളിൽ 24മണി/8മണി ശരാശരി കാണിച്ചിരിക്കുന്നു — Google/SAFAR രീതി)", "aqiCategory.Good": "നല്ലത്", "aqiCategory.Satisfactory": "തൃപ്തികരം", "aqiCategory.Moderate": "മിതമായ", "aqiCategory.Poor": "മോശം", "aqiCategory.VeryPoor": "വളരെ മോശം", "aqiCategory.Severe": "ഗുരുതരം", "aqiCategory.Unknown": "അജ്ഞാതം"
+    },
+    or: {
+      panelTitle: "🧭 କ୍ୱିକ ମଡ୍ୟୁଲ",
+      "aqi.head": "🌫️ ବାୟୁ ଗୁଣବତ୍ତା ସୂଚକାଙ୍କ", "aqi.copy": "ଆପଣଙ୍କ ସ୍ଥାନ ପାଇଁ ବାୟୁ ଗୁଣବତ୍ତା ସୂଚକାଙ୍କ ଏବଂ PM2.5 / PM10 ଅବସ୍ଥା ଯାଞ୍ଚ କରନ୍ତୁ।",
+      "rain.head": "🌧️ ବର୍ଷା", "rain.copy": "ମଧ୍ୟମ / ଅଧିକ / ଅତି ଅଧିକ ବର୍ଷାର ପୂର୍ବାନୁମାନ।",
+      "rain.mod": "ମଧ୍ୟମ", "rain.high": "ଅଧିକ", "rain.vhigh": "ଅତି ଅଧିକ",
+      "energy.head": "⚡ ନବୀକରଣୀୟ ଶକ୍ତି", "energy.copy": "NWP ବିକିରଣ ଏବଂ ପବନ ତଥ୍ୟରୁ ସୌର / ପବନ ଉତ୍ପାଦନ ପୂର୍ବାନୁମାନ।",
+      "construction.head": "🏗️ ନିର୍ମାଣ", "construction.copy": "ଆକସ୍ମିକ ଯୋଜନା, କ୍ରେନ୍/ସାଇଟ୍ ପାଣିପାଗ ବିପଦ ଏବଂ କାର୍ଯ୍ୟ-ୱିଣ୍ଡୋ ଚେତାବନୀ।", "construction.badge": "ଲାଇଭ GPS ଯାଞ୍ଚ",
+      "hinglish.head": "🗣️ ହିଂଗ୍ଲିଶ ମୋଡ୍", "hinglish.copy": "ହିଂଗ୍ଲିଶରେ କଥାବାର୍ତ୍ତା କରନ୍ତୁ — ହିନ୍ଦୀ + ଇଂରାଜୀ ଉତ୍ତର।",
+      "aqiCard.label": "ବାୟୁ ଗୁଣବତ୍ତା ସୂଚକାଙ୍କ (CPCB)", "aqiCard.dominant": "ପ୍ରମୁଖ ପ୍ରଦୂଷକ", "aqiCard.instant": "ତୁରନ୍ତ ରିଡିଂ: {value} (ଉପରେ 24ଘ/8ଘ ହାରାହାରି ଦେଖାଯାଇଛି — Google/SAFAR ପରି ପଦ୍ଧତି)", "aqiCategory.Good": "ଭଲ", "aqiCategory.Satisfactory": "ସନ୍ତୋଷଜନକ", "aqiCategory.Moderate": "ମଧ୍ୟମ", "aqiCategory.Poor": "ଖରାପ", "aqiCategory.VeryPoor": "ବହୁତ ଖରାପ", "aqiCategory.Severe": "ଗମ୍ଭୀର", "aqiCategory.Unknown": "ଅଜଣା"
+    },
+    ur: {
+      panelTitle: "🧭 فوری ماڈیولز",
+      "aqi.head": "🌫️ ہوا کے معیار کا اشاریہ", "aqi.copy": "اپنے مقام کے لیے ہوا کے معیار کا اشاریہ اور PM2.5 / PM10 حالات چیک کریں۔",
+      "rain.head": "🌧️ بارش", "rain.copy": "درمیانی / زیادہ / بہت زیادہ بارش کی پیشگوئی۔",
+      "rain.mod": "درمیانی", "rain.high": "زیادہ", "rain.vhigh": "بہت زیادہ",
+      "energy.head": "⚡ قابلِ تجدید توانائی", "energy.copy": "NWP تابکاری اور ہوا کے ڈیٹا سے شمسی / ہوائی پیداوار کی پیشگوئی۔",
+      "construction.head": "🏗️ تعمیرات", "construction.copy": "ہنگامی منصوبہ بندی، کرین/سائٹ موسمی خطرہ اور ورک ونڈو الرٹس۔", "construction.badge": "لائیو GPS چیک",
+      "hinglish.head": "🗣️ ہنگلش موڈ", "hinglish.copy": "ہنگلش میں بات کریں — ہندی + انگریزی جوابات۔",
+      "aqiCard.label": "ہوا کے معیار کا اشاریہ (CPCB)", "aqiCard.dominant": "غالب آلودگی", "aqiCard.instant": "فوری ریڈنگ: {value} (اوپر 24گھنٹے/8گھنٹے کا اوسط دکھایا گیا ہے — Google/SAFAR جیسا طریقہ)", "aqiCategory.Good": "اچھا", "aqiCategory.Satisfactory": "تسلی بخش", "aqiCategory.Moderate": "درمیانہ", "aqiCategory.Poor": "خراب", "aqiCategory.VeryPoor": "بہت خراب", "aqiCategory.Severe": "شدید", "aqiCategory.Unknown": "نامعلوم"
+    }
+  };
+
+  function applyPanelI18n(code){
+    const dict = PANEL_I18N[code] || PANEL_I18N.en;
+    document.querySelectorAll("[data-i18n]").forEach(node => {
+      const key = node.getAttribute("data-i18n");
+      const text = dict[key] !== undefined ? dict[key] : PANEL_I18N.en[key];
+      if(text !== undefined) node.textContent = text;
+    });
+  }
+
+  // General-purpose lookup for translated strings used inside dynamically
+  // built bot responses (e.g. the AQI card), keyed off the currently
+  // selected reply language.
+  function i18n(key){
+    const code = (typeof langSelect !== "undefined" && langSelect) ? langSelect.value : "en";
+    const dict = PANEL_I18N[code] || PANEL_I18N.en;
+    if(dict[key] !== undefined) return dict[key];
+    if(PANEL_I18N.en[key] !== undefined) return PANEL_I18N.en[key];
+    return key;
+  }
+
+  // CPCB category names come back from the backend in fixed English form
+  // (Good / Satisfactory / Moderate / Poor / Very Poor / Severe / Unknown).
+  // Map them to the selected language for display.
+  function translateAqiCategory(category){
+    if(!category) return category;
+    const key = "aqiCategory." + String(category).replace(/\s+/g, "");
+    const code = (typeof langSelect !== "undefined" && langSelect) ? langSelect.value : "en";
+    const dict = PANEL_I18N[code] || PANEL_I18N.en;
+    if(dict[key] !== undefined) return dict[key];
+    if(PANEL_I18N.en[key] !== undefined) return PANEL_I18N.en[key];
+    return category;
+  }
+
+  // Was `location.origin.includes("8080") ? "http://localhost:8000" : "http://localhost:8000"`
+  // — both branches of that ternary were identical, so on any host other
+  // than localhost this silently pointed at a backend that doesn't exist
+  // there (e.g. after deploying to Render, per render.yaml, where frontend
+  // and backend are two different hostnames) until the user manually ran
+  // the "Backend API base URL" prompt below. Keep the localhost:8000
+  // default for the docker-compose dev setup (frontend on :8080, backend on
+  // :8000), but otherwise fall back to same-origin, which is right for any
+  // single-domain deployment that reverse-proxies /api to the backend.
+  function defaultApiBase(){
+    const saved = localStorage.getItem("wgpt_api_base");
+    if(saved) return saved.replace(/\/$/, "");
+    const qp = new URLSearchParams(location.search).get("api");
+    if(qp) return qp.replace(/\/$/, "");
+    if(location.protocol === "file:" || ["localhost","127.0.0.1"].includes(location.hostname)) return "http://localhost:8000";
+    if(location.hostname === "weather-nova-frontend.onrender.com") return "https://weather-nova-backend.onrender.com";
+    return location.origin;
+  }
+  let API_BASE = defaultApiBase();
+
+  const el = (id) => document.getElementById(id);
+  const transcript = el("transcript");
+  const textInput = el("textInput");
+  const sendBtn = el("sendBtn");
+  const micBtn = el("micBtn");
+  const langSelect = el("langSelect");
+  const langNameTag = el("langNameTag");
+  const statusDot = el("statusDot");
+  const statusText = el("statusText");
+  const speakToggle = el("speakToggle");
+
+  let speakReplies = false;
+  let userCoords = null;
+  let locationChecks = 0;
+  let LANGS = DEFAULT_LANGS;
+
+  function setLiveLocationUI(status, accuracy){
+    const v = el("liveLocationValue"), a = el("gpsAccuracyValue"), c = el("locationCheckValue");
+    if(v) v.textContent = status;
+    if(a) a.textContent = accuracy != null ? "±" + Math.round(accuracy) + " m" : "—";
+    if(c) c.textContent = String(locationChecks);
+  }
+
+  async function reverseLiveLocation(coords){
+    try{
+      const r = await fetch(
+        API_BASE + "/api/location/reverse?lat=" +
+        encodeURIComponent(coords.lat) + "&lon=" + encodeURIComponent(coords.lon)
+      );
+      if(!r.ok) return null;
+      return await r.json();
+    }catch(e){ return null; }
+  }
+
+  async function freshGPS(){
+    return new Promise((resolve, reject) => {
+      if(!navigator.geolocation){
+        reject(new Error("Geolocation is not supported by this browser."));
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        async pos => {
+          userCoords = {
+            lat: pos.coords.latitude,
+            lon: pos.coords.longitude,
+            accuracy: pos.coords.accuracy
+          };
+          locationChecks += 1;
+
+          // GPS is always fresh; reverse-geocoding is only for the human-readable label.
+          setLiveLocationUI(
+            "📡 GPS acquired · resolving locality…",
+            userCoords.accuracy
+          );
+
+          const place = await reverseLiveLocation(userCoords);
+          userCoords.place = place || null;
+
+          const label = place && place.label
+            ? "📍 " + place.label
+            : userCoords.lat.toFixed(5) + "°, " + userCoords.lon.toFixed(5) + "°";
+
+          setLiveLocationUI(label, userCoords.accuracy);
+          resolve(userCoords);
+        },
+        err => reject(err),
+        {
+          enableHighAccuracy:true,
+          timeout:20000,
+          maximumAge:0
+        }
+      );
+    });
+  }
+
+  async function runLocationModule(query){
+    addUserBubble(query);
+    sendBtn.disabled = true;
+    addTypingBubble();
+    setLiveLocationUI("Checking fresh GPS…", null);
+    try{
+      const coords = await freshGPS();
+      const result = await sendChat(query, coords);
+      removeTypingBubble();
+      addBotBubble(result.reply, result.data, result.intent);
+    }catch(err){
+      removeTypingBubble();
+      const msg = err && err.code ? "Couldn't get a fresh GPS position. Please allow location access in your browser, then click the module again." : "I couldn't reach WeatherGPT.";
+      addBotBubble(msg);
+      setLiveLocationUI("GPS unavailable", null);
+    }finally{ sendBtn.disabled = false; }
+  }
+
+
+  function populateLangSelect(){
+    langSelect.innerHTML = "";
+    Object.entries(LANGS).forEach(([code, meta]) => {
+      const opt = document.createElement("option");
+      opt.value = code; opt.textContent = meta.name;
+      langSelect.appendChild(opt);
+    });
+    // Restore previously chosen reply language (and its Quick Modules i18n).
+    const saved = localStorage.getItem("wgpt_lang");
+    const initial = (saved && LANGS[saved]) ? saved : "en";
+    langSelect.value = initial;
+    applyPanelI18n(langSelect.value);
+    if(langNameTag){
+      langNameTag.textContent = langSelect.value.toUpperCase() + " · Conversational met engine";
+    }
+  }
+  populateLangSelect();
+
+  async function checkHealth(){
+    try{
+      const r = await fetch(API_BASE + "/api/health", {method:"GET"});
+      if(!r.ok) throw new Error("bad status");
+      statusDot.classList.remove("offline");
+      statusText.textContent = "live · " + API_BASE.replace(/^https?:\/\//,"");
+      try{
+        const langsResp = await fetch(API_BASE + "/api/languages");
+        if(langsResp.ok){ LANGS = await langsResp.json(); populateLangSelect(); }
+      }catch(e){}
+    }catch(e){
+      statusDot.classList.add("offline");
+      statusText.textContent = "backend offline — set API endpoint below";
+    }
+  }
+  checkHealth();
+  loadStatusStrip();
+  setInterval(loadStatusStrip, 30000);
+
+  langSelect.addEventListener("change", () => {
+    const code = langSelect.value;
+    localStorage.setItem("wgpt_lang", code);
+    langNameTag.textContent = code.toUpperCase() + " · Conversational met engine";
+    applyPanelI18n(code);
+  });
+
+  el("apiCfgBtn").addEventListener("click", () => {
+    const val = prompt("Backend API base URL:", API_BASE);
+    if(val){ API_BASE = val.replace(/\/$/,""); localStorage.setItem("wgpt_api_base", API_BASE); checkHealth(); }
+  });
+
+  speakToggle.addEventListener("click", () => {
+    speakReplies = !speakReplies;
+    speakToggle.textContent = "🔊 Read replies aloud: " + (speakReplies ? "ON" : "OFF");
+  });
+
+  el("locBtn").addEventListener("click", async () => {
+    const btn = el("locBtn");
+    btn.textContent = "Locating…";
+    try{
+      const c = await freshGPS();
+      btn.innerHTML = '📍 Live location (' + c.lat.toFixed(2) + ', ' + c.lon.toFixed(2) + ')';
+      addBotBubble("Fresh GPS location acquired. Every quick module will request a new GPS fix before analysis.");
+    }catch(err){
+      btn.textContent = "Use my location";
+      addBotBubble("Couldn't access fresh GPS. Allow location in the browser and try again.");
+    }
+  });
+
+  document.querySelectorAll(".chip").forEach(chip => {
+    chip.addEventListener("click", () => runLocationModule(chip.dataset.q));
+  });
+
+  // Quick Modules is a single toggle button that opens a drawer holding
+  // the AQI / Rainfall / Renewable Energy / Construction / Hinglish cards
+  // (previously a permanently-docked side column, hidden entirely on
+  // mobile). Clicking a card still runs its query, then closes the drawer.
+  const quickToggleBtn = document.getElementById("quickToggleBtn");
+  const quickPanel = document.getElementById("quickPanel");
+  const quickBackdrop = document.getElementById("quickBackdrop");
+  const quickCloseBtn = document.getElementById("quickCloseBtn");
+
+  function openQuickPanel(){
+    quickPanel.classList.add("open");
+    quickBackdrop.classList.add("open");
+    quickPanel.setAttribute("aria-hidden", "false");
+    quickToggleBtn.setAttribute("aria-expanded", "true");
+  }
+  function closeQuickPanel(){
+    quickPanel.classList.remove("open");
+    quickBackdrop.classList.remove("open");
+    quickPanel.setAttribute("aria-hidden", "true");
+    quickToggleBtn.setAttribute("aria-expanded", "false");
+  }
+  quickToggleBtn.addEventListener("click", () => {
+    if(quickPanel.classList.contains("open")) closeQuickPanel(); else openQuickPanel();
+  });
+  quickCloseBtn.addEventListener("click", closeQuickPanel);
+  quickBackdrop.addEventListener("click", closeQuickPanel);
+  document.addEventListener("keydown", (e) => {
+    if(e.key === "Escape" && quickPanel.classList.contains("open")) closeQuickPanel();
+  });
+
+  document.querySelectorAll(".module-card[data-q]").forEach(btn => {
+    btn.addEventListener("click", () => { closeQuickPanel(); runLocationModule(btn.dataset.q); });
+  });
+  document.querySelectorAll(".suggestion[data-q]").forEach(btn => {
+    btn.addEventListener("click", () => runLocationModule(btn.dataset.q));
+  });
+
+  const hinglishCard = document.querySelector('.module-card[data-lang="hinglish"]');
+  if(hinglishCard){
+    hinglishCard.addEventListener('click', () => {
+      closeQuickPanel();
+      if(Array.from(langSelect.options).some(o => o.value === 'hinglish')){
+        langSelect.value = 'hinglish';
+        langSelect.dispatchEvent(new Event('change'));
+      }
+      textInput.placeholder = 'Hinglish mein weather, AQI, routes, energy ya construction poochho…';
+      textInput.focus();
+    });
+  }
+
+  function scrollToBottom(){ transcript.scrollTop = transcript.scrollHeight; }
+
+  function addUserBubble(text){
+    const wrap = document.createElement("div");
+    wrap.className = "msg user";
+    wrap.innerHTML = `<div class="bubble"></div>`;
+    wrap.querySelector(".bubble").textContent = text;
+    transcript.appendChild(wrap);
+    scrollToBottom();
+  }
+
+  function addTypingBubble(){
+    const wrap = document.createElement("div");
+    wrap.className = "msg bot"; wrap.id = "typingIndicator";
+    wrap.innerHTML = `<div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;
+    transcript.appendChild(wrap);
+    scrollToBottom();
+  }
+  function removeTypingBubble(){ const t = el("typingIndicator"); if(t) t.remove(); }
+
+  function addBotBubble(text, dataPayload, intent){
+    const wrap = document.createElement("div");
+    wrap.className = "msg bot";
+    const bubble = document.createElement("div");
+    bubble.className = "bubble";
+    bubble.textContent = text;
+    wrap.appendChild(bubble);
+
+    if(dataPayload){
+      wrap.appendChild(buildBulletin(dataPayload, intent));
+    }
+    transcript.appendChild(wrap);
+    scrollToBottom();
+
+    if(speakReplies && text){
+      try{
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = (LANGS[langSelect.value] || {}).speech || "en-IN";
+        speechSynthesis.cancel();
+        speechSynthesis.speak(utter);
+      }catch(e){}
+    }
+  }
+
+  function levelClass(level){ return "alert-" + (level || "green"); }
+
+
+  // Hand-built SVG BAR chart for the climate trend — deliberately has ZERO
+  // external dependency (no CDN library, so it always renders even when a
+  // network/firewall/ad-blocker blocks third-party CDNs). Grouped bars: one
+  // bar per year for avg max temp, one for total rainfall, each on its own
+  // 0-baseline scale (a proper X-Y bar plane rather than a line chart).
+  function buildClimateChartSVG(years, temps, rains){
+    const W = 600, H = 170;
+    const padL = 34, padR = 34, padT = 10, padB = 20;
+    const plotW = W - padL - padR;
+    const plotH = H - padT - padB;
+    const n = years.length;
+
+    const tVals = temps.filter(v => v != null);
+    const rVals = rains.filter(v => v != null);
+    // Bars should read from a true 0 baseline (unlike a line chart's zoomed
+    // min/max), so scale against the max value only, with a little headroom.
+    const tMax = (tVals.length ? Math.max(...tVals) : 1) * 1.15 || 1;
+    const rMax = (rVals.length ? Math.max(...rVals) : 1) * 1.15 || 1;
+
+    const xStep = n > 0 ? plotW / n : plotW;
+    const slotCenter = i => padL + xStep * (i + 0.5);
+    const barW = Math.max(2, Math.min(16, xStep * 0.32));
+    const gap = 2;
+    const baseY = padT + plotH;
+    const heightFor = (v, max) => (v == null ? 0 : (v / max) * plotH);
+
+    let grid = "";
+    for(let g = 0; g <= 3; g++){
+      const y = padT + (plotH / 3) * g;
+      grid += `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${W - padR}" y2="${y.toFixed(1)}" stroke="var(--line-700)" stroke-width="1" opacity="0.6"/>`;
+    }
+    // 0-baseline axis line, a touch stronger than the other gridlines.
+    grid += `<line x1="${padL}" y1="${baseY.toFixed(1)}" x2="${W - padR}" y2="${baseY.toFixed(1)}" stroke="var(--line-700)" stroke-width="1.2" opacity="0.9"/>`;
+
+    const labelEvery = n > 8 ? Math.ceil(n / 8) : 1;
+    let xLabels = "";
+    years.forEach((y, i) => {
+      if(i % labelEvery !== 0 && i !== n - 1) return;
+      xLabels += `<text x="${slotCenter(i).toFixed(1)}" y="${H - 4}" font-size="9" fill="var(--fog-500)" text-anchor="middle">${escapeHtml(String(y))}</text>`;
+    });
+
+    let tempBars = "", rainBars = "";
+    for(let i = 0; i < n; i++){
+      const cx = slotCenter(i);
+      const tv = temps[i], rv = rains[i];
+      if(tv != null){
+        const h = heightFor(tv, tMax);
+        const x = cx - gap / 2 - barW;
+        tempBars += `<rect x="${x.toFixed(1)}" y="${(baseY - h).toFixed(1)}" width="${barW.toFixed(1)}" height="${h.toFixed(1)}" rx="1.5" fill="var(--orange)"><title>${escapeHtml(String(years[i]))}: ${tv}°C</title></rect>`;
+      }
+      if(rv != null){
+        const h = heightFor(rv, rMax);
+        const x = cx + gap / 2;
+        rainBars += `<rect x="${x.toFixed(1)}" y="${(baseY - h).toFixed(1)}" width="${barW.toFixed(1)}" height="${h.toFixed(1)}" rx="1.5" fill="var(--signal-400)"><title>${escapeHtml(String(years[i]))}: ${rv}mm</title></rect>`;
+      }
+    }
+
+    return `<svg viewBox="0 0 ${W} ${H}" style="width:100%; height:100%; display:block;">
+      ${grid}
+      ${rainBars}
+      ${tempBars}
+      ${xLabels}
+    </svg>`;
+  }
+
+  function buildEnergyPoints(data){
+    const wrap = document.createElement("div");
+    wrap.className = "energy-points";
+
+    const e = (data && data.energy_forecast) || {};
+    const loc = (data && data.location) || "Selected location";
+
+    const scoreText = v => v == null ? "—" : `${Math.round(Number(v))}/100`;
+    const num = (v, digits=1) => {
+      if(v == null || Number.isNaN(Number(v))) return "—";
+      return Number(v).toFixed(digits).replace(/\.0$/, "");
+    };
+
+    const solarScore = scoreText(e.solar_potential_score);
+    const windScore = scoreText(e.wind_potential_score);
+    const hydroScore = scoreText(e.hydro_potential_score);
+    const overallScore = scoreText(e.overall_renewable_score);
+
+    const solar = e.solar_outlook || "No solar assessment available";
+    const wind = e.wind_outlook || "No wind assessment available";
+    const hydro = e.hydro_outlook || "No hydro assessment available";
+
+    const solarDriver = [
+      e.avg_shortwave_radiation_wm2 != null ? `avg ${num(e.avg_shortwave_radiation_wm2)} W/m²` : null,
+      e.peak_shortwave_radiation_wm2 != null ? `peak ${num(e.peak_shortwave_radiation_wm2)} W/m²` : null
+    ].filter(Boolean).join(" · ");
+
+    const windDriver = [
+      e.avg_windspeed_80m_kmh != null ? `avg ${num(e.avg_windspeed_80m_kmh)} km/h @ 80 m` : null,
+      e.max_windspeed_80m_kmh != null ? `max ${num(e.max_windspeed_80m_kmh)} km/h @ 80 m` : null
+    ].filter(Boolean).join(" · ");
+
+    const hydroDriver = [
+      e.forecast_precipitation_mm != null ? `rainfall ${num(e.forecast_precipitation_mm)} mm` : null,
+      e.max_rain_probability_pct != null ? `max rain chance ${num(e.max_rain_probability_pct,0)}%` : null
+    ].filter(Boolean).join(" · ");
+
+    wrap.innerHTML = `
+      <div class="energy-heading"><span class="bolt">⚡</span><span>Renewable Energy Forecast — ${escapeHtml(loc)}</span></div>
+      <ul>
+        <li>
+          <span class="energy-label">Solar Output Potential:</span>
+          <span class="energy-value">${escapeHtml(solar)}</span>
+          <span class="energy-sub">Potential score: ${escapeHtml(solarScore)}${solarDriver ? ` · ${escapeHtml(solarDriver)}` : ""}</span>
+        </li>
+        <li>
+          <span class="energy-label">Wind Output Potential:</span>
+          <span class="energy-value">${escapeHtml(wind)}</span>
+          <span class="energy-sub">Potential score: ${escapeHtml(windScore)}${windDriver ? ` · ${escapeHtml(windDriver)}` : ""}</span>
+        </li>
+        <li>
+          <span class="energy-label">Hydro Output Potential:</span>
+          <span class="energy-value">${escapeHtml(hydro)}</span>
+          <span class="energy-sub">Weather inflow signal: ${escapeHtml(hydroScore)}${hydroDriver ? ` · ${escapeHtml(hydroDriver)}` : ""}</span>
+        </li>
+        <li>
+          <span class="energy-label">Overall Renewable Potential:</span>
+          <span class="energy-score">${escapeHtml(overallScore)}</span>
+          <span class="energy-sub">Based on the live weather drivers available for this location.</span>
+        </li>
+        <li>
+          <span class="energy-label">Forecast Horizon:</span>
+          <span class="energy-value">${e.horizon_hours ? `${Math.round(Number(e.horizon_hours))} hours` : "—"}</span>
+        </li>
+      </ul>
+      <div class="energy-note">MW generation is not invented here: actual MW requires installed plant capacity and plant-specific power curves. Hydro is a rainfall/inflow signal, not measured turbine output.</div>
+      <div class="energy-source">📡 ${escapeHtml(data.data_source || "Open-Meteo hourly NWP radiation, wind and precipitation")}</div>
+    `;
+    return wrap;
+  }
+
+    function buildForecastList(forecast){
+      if(!Array.isArray(forecast) || !forecast.length) return "";
+      const dayName = value => {
+        if(!value) return "—";
+        const d = new Date(value + "T12:00:00");
+        return Number.isNaN(d.getTime()) ? value : d.toLocaleDateString(undefined, {weekday:"short", month:"short", day:"numeric"});
+      };
+      const fmt = (v, suffix="") => v == null || Number.isNaN(Number(v)) ? "—" : `${Math.round(Number(v))}${suffix}`;
+      return `
+        <div class="forecast-list">
+          <div class="forecast-title">${forecast.length}-day forecast</div>
+          ${forecast.map(d => `
+            <div class="forecast-row">
+              <div class="forecast-date">${escapeHtml(dayName(d.date))}</div>
+              <div class="forecast-condition">
+                <div>${escapeHtml(d.condition || "—")}</div>
+                <div style="font-size:9px;color:var(--fog-500);margin-top:2px;">
+                  ${d.rainfall_mm != null ? escapeHtml(fmt(d.rainfall_mm, " mm rain")) : "Rainfall —"}
+                  ${d.wind_kmh != null ? " · " + escapeHtml(fmt(d.wind_kmh, " km/h wind")) : ""}
+                </div>
+              </div>
+              <div class="forecast-temp">${d.temperature_min != null && d.temperature_max != null ? escapeHtml(fmt(d.temperature_min) + "–" + fmt(d.temperature_max) + "°C") : "—"}</div>
+              <div class="forecast-rain">${d.rain_probability != null ? escapeHtml(fmt(d.rain_probability, "% rain")) : "—"}</div>
+            </div>
+          `).join("")}
+        </div>`;
+    }
+
+    function buildHistoricalList(reports, start, end){
+      if(!Array.isArray(reports) || !reports.length) return "";
+      const dayName = value => {
+        if(!value) return "—";
+        const d = new Date(value + "T12:00:00");
+        return Number.isNaN(d.getTime())
+          ? value
+          : d.toLocaleDateString(undefined, {weekday:"short", month:"short", day:"numeric", year:"numeric"});
+      };
+      const fmt = (v, suffix="") => v == null || Number.isNaN(Number(v))
+        ? "—" : `${Math.round(Number(v)*10)/10}${suffix}`;
+
+      return `
+        <div class="forecast-list" style="margin-top:10px;">
+          <div class="forecast-title">Past weather report · ${reports.length} day${reports.length === 1 ? "" : "s"}</div>
+          ${reports.map(d => `
+            <div class="forecast-row">
+              <div class="forecast-date">${escapeHtml(dayName(d.date))}</div>
+              <div class="forecast-condition">
+                <div>${escapeHtml(d.condition || "—")}</div>
+                <div style="font-size:9px;color:var(--fog-500);margin-top:2px;">
+                  Rain ${escapeHtml(fmt(d.rainfall_mm, " mm"))}
+                  · Wind ${escapeHtml(fmt(d.wind_kmh, " km/h"))}
+                  ${d.humidity_max != null ? " · Humidity " + escapeHtml(fmt(d.humidity_max, "%")) : ""}
+                </div>
+              </div>
+              <div class="forecast-temp">
+                ${d.temperature_min != null && d.temperature_max != null
+                  ? escapeHtml(fmt(d.temperature_min) + "–" + fmt(d.temperature_max) + "°C")
+                  : "—"}
+              </div>
+              <div class="forecast-rain">${d.rain_hours != null ? escapeHtml(fmt(d.rain_hours, "h rain")) : "—"}</div>
+            </div>
+          `).join("")}
+        </div>`;
+    }
+
+    function buildCycloneSection(info, regionLabel){
+      const alert = info.alert || {level:"green", hazards:[]};
+      const cyclones = info.active_cyclones || [];
+      let html = `
+        <div class="bulletin-head">
+          <span class="loc">${escapeHtml(regionLabel || info.region || "")}</span>
+          <span class="alert-pill ${levelClass(alert.level)}"><span class="dot"></span>${escapeHtml(info.alert_label || alert.level)}</span>
+        </div>
+        <div class="bulletin-body">`;
+
+      if(cyclones.length){
+        // Group by basin so e.g. Western Pacific and Eastern/Central
+        // Pacific storms never get merged into one undifferentiated list.
+        const groups = {};
+        cyclones.forEach(c => {
+          const key = c.basin_label || (c.basin ? c.basin.toUpperCase() : "Unclassified");
+          (groups[key] = groups[key] || []).push(c);
+        });
+        const groupKeys = Object.keys(groups);
+        groupKeys.forEach(key => {
+          if(groupKeys.length > 1){
+            html += `<div class="coords" style="margin-top:4px;">${escapeHtml(key.toUpperCase())}</div>`;
+          }
+          html += `<ul class="advisory-list">`;
+          groups[key].forEach(c => {
+            const name = c.name || "Unnamed";
+            const cat = c.category || "tropical system";
+            const msw = c.mean_msw_kmph;
+            const kt = c.intensity_kt;
+            let wind = "";
+            if(msw){ wind = ` · ~${Math.round(msw)} km/h`; if(kt) wind += ` (${Math.round(kt)} kt)`; }
+            else if(kt){ wind = ` · ~${Math.round(kt)} kt`; }
+            let pos = "";
+            if(c.latest_lat != null && c.latest_lon != null){
+              pos = ` · ${Number(c.latest_lat).toFixed(1)}°, ${Number(c.latest_lon).toFixed(1)}°`;
+            }
+            html += `<li><strong>${escapeHtml(name)}</strong> — ${escapeHtml(cat)}${wind}${pos}</li>`;
+          });
+          html += `</ul>`;
+        });
+      } else {
+        html += `<div style="font-size:13px; color:var(--fog-300);">No active tropical cyclone currently listed for this region.</div>`;
+      }
+
+      if(info.monsoon){
+        html += `<div class="coords" style="margin-top:4px;">${escapeHtml(info.monsoon.phase || "")}${info.monsoon.tip ? " — " + escapeHtml(info.monsoon.tip) : ""}</div>`;
+      }
+
+      if(info.map && info.map.lat != null && info.map.lon != null){
+        const mlat = Number(info.map.lat), mlon = Number(info.map.lon);
+        const delta = 4; // wide view — cyclones move fast and cover large areas
+        const bbox = `${mlon-delta},${mlat-delta},${mlon+delta},${mlat+delta}`;
+        const osm = `https://www.openstreetmap.org/export/embed.html?bbox=${encodeURIComponent(bbox)}&layer=mapnik&marker=${mlat},${mlon}`;
+        html += `<div class="map-wrap"><iframe loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="${osm}" title="Cyclone position map"></iframe></div>`;
+      }
+      html += `</div>`;
+      return html;
+    }
+
+    function buildCycloneCard(data){
+      const card = document.createElement("div");
+      card.className = "bulletin";
+      let html = "";
+      if(data.by_location){
+        Object.entries(data.by_location).forEach(([loc, info]) => {
+          html += buildCycloneSection(info, loc);
+        });
+      } else {
+        html += buildCycloneSection(data, data.region);
+      }
+      html += `<div class="data-source" style="padding:0 13px 12px;">📡 ${escapeHtml(data.data_source || "IMD + NHC + RAMMB/CIRA (+ WIS2 fallback)")}</div>`;
+      card.innerHTML = html;
+      return card;
+    }
+
+    function buildBulletin(data, intent){
+    // Historical reports are rendered separately from the live/current
+    // bulletin so the UI never labels archive observations as a forecast.
+    if(data && data.historical && Array.isArray(data.historical_reports)){
+      const card = document.createElement("div");
+      card.className = "bulletin";
+      const start = data.historical_start || data.requested_start || "";
+      const end = data.historical_end || data.requested_end || start;
+      let html = `
+        <div class="bulletin-head">
+          <span class="loc">${escapeHtml(data.location || "")}</span>
+          <span class="alert-pill"><span class="dot" style="background:var(--signal-400)"></span>PAST REPORT</span>
+        </div>
+        <div class="bulletin-body">
+          <div class="stat-grid">
+            <div class="stat"><span class="k">Period</span><span class="v">${escapeHtml(start)}${end && end !== start ? " → " + escapeHtml(end) : ""}</span></div>
+            <div class="stat"><span class="k">Days</span><span class="v">${data.historical_days ?? data.historical_reports.length}</span></div>
+          </div>
+          ${buildHistoricalList(data.historical_reports, start, end)}
+      `;
+      if(data.coordinates){
+        html += `<div class="coords">STN ${Number(data.coordinates.lat).toFixed(2)}°, ${Number(data.coordinates.lon).toFixed(2)}° · Historical archive</div>`;
+      }
+      if(data.district){
+        const d = data.district;
+        const dname = d.district || d.name || "";
+        const st = d.state || "";
+        html += `<div class="coords">DISTRICT ${escapeHtml(dname)}${st ? ", " + escapeHtml(st) : ""} (PostGIS)</div>`;
+      }
+      if(data.map && data.map.lat != null && data.map.lon != null){
+        const mlat = Number(data.map.lat), mlon = Number(data.map.lon);
+        const delta = 0.06;
+        const bbox = `${mlon-delta},${mlat-delta},${mlon+delta},${mlat+delta}`;
+        const osm = `https://www.openstreetmap.org/export/embed.html?bbox=${encodeURIComponent(bbox)}&layer=mapnik&marker=${mlat},${mlon}`;
+        html += `<div class="map-wrap"><iframe loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="${osm}" title="Historical report location"></iframe></div>`;
+      }
+      html += `<div class="data-source">📡 ${escapeHtml(data.data_source || "Open-Meteo Historical Weather API (archive/reanalysis)")}</div>`;
+      html += `</div>`;
+      card.innerHTML = html;
+      return card;
+    }
+
+    // Renewable energy is intentionally rendered as clean points rather than
+    // another large card. It is driven by the live structured energy payload.
+    if(intent === "energy" || (data && data.energy_forecast)){
+      return buildEnergyPoints(data);
+    }
+
+    // Cyclone-alert answers carry `region`/`monsoon`/`active_cyclones` (and
+    // optionally `by_location` for a multi-place question) instead of the
+    // usual day/current weather fields. Reusing the generic Temp/Range/
+    // Rain/Wind stat-grid for these left the box full of "—" placeholders
+    // and a hardcoded green pill. Render a dedicated cyclone card instead,
+    // grouped by basin/sub-region so a broad ask like "Pacific" (which
+    // spans Western + Eastern + Central Pacific) never mixes storms from
+    // unrelated regions into one confusing list.
+    if(data.by_location || (data.active_cyclones !== undefined && data.region !== undefined)){
+      return buildCycloneCard(data);
+    }
+
+    const card = document.createElement("div");
+    card.className = "bulletin";
+
+    if(data.error){
+      let html = `
+      <div class="bulletin-head">
+        <span class="loc">${escapeHtml(data.location || "Weather Alert")}</span>
+        <span class="alert-pill alert-yellow"><span class="dot"></span>Temporary Notice</span>
+      </div>
+      <div class="bulletin-body">
+        <div style="font-size:13px; color:var(--fog-300);">${escapeHtml(data.reason || "Live weather forecast is temporarily unavailable.")}</div>`;
+      if(data.map && data.map.lat != null && data.map.lon != null){
+        const mlat = Number(data.map.lat), mlon = Number(data.map.lon);
+        const delta = 0.08;
+        const bbox = `${mlon-delta},${mlat-delta},${mlon+delta},${mlat+delta}`;
+        const osm = `https://www.openstreetmap.org/export/embed.html?bbox=${encodeURIComponent(bbox)}&layer=mapnik&marker=${mlat},${mlon}`;
+        html += `<div class="map-wrap"><iframe loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="${osm}" title="OpenStreetMap location map"></iframe></div>`;
+        html += `<div class="coords">📍 Map center ${mlat.toFixed(5)}°, ${mlon.toFixed(5)}° · OpenStreetMap</div>`;
+      }
+      html += `</div>`;
+      card.innerHTML = html;
+      return card;
+    }
+
+    const day = data.day || {};
+    const current = data.current || {};
+    const alert = data.alert || {level:"green", hazards:[]};
+    const temp = current.temperature !== undefined && current.temperature !== null
+      ? current.temperature
+      : (current.temperature_2m !== undefined && current.temperature_2m !== null ? current.temperature_2m : day.temperature_2m_max);
+    const wind = current.windspeed !== undefined && current.windspeed !== null
+      ? current.windspeed
+      : (current.wind_speed_10m !== undefined && current.wind_speed_10m !== null ? current.wind_speed_10m : day.windspeed_10m_max);
+
+    let html = `
+      <div class="bulletin-head">
+        <span class="loc">${escapeHtml(data.location || "")}</span>
+        <span class="alert-pill ${levelClass(alert.level)}"><span class="dot"></span>${escapeHtml(data.alert_label || alert.level)}</span>
+      </div>
+      <div class="bulletin-body">
+        <div class="stat-grid">
+          <div class="stat"><span class="k">Temp</span><span class="v">${temp !== undefined && temp !== null ? Math.round(temp*10)/10 + "°C" : "—"}</span></div>
+          <div class="stat"><span class="k">Range</span><span class="v">${fmtRange(day)}</span></div>
+          <div class="stat"><span class="k">Rain</span><span class="v">${day.precipitation_probability_max != null ? day.precipitation_probability_max + "%" : "—"}</span></div>
+          <div class="stat"><span class="k">Wind</span><span class="v">${wind !== undefined && wind !== null ? Math.round(wind) + " km/h" : "—"}</span></div>
+        </div>`;
+
+    if(intent === "forecast" && Array.isArray(data.forecast) && data.forecast.length){
+      html += buildForecastList(data.forecast);
+    }
+
+    if(data.conditions){
+      const c = data.conditions;
+      const rows = [];
+      if(c.humidity_pct != null) rows.push(["Humidity", c.humidity_pct + "%"]);
+      if(c.pressure_hpa != null) rows.push(["Pressure", Math.round(c.pressure_hpa) + " hPa"]);
+      if(c.visibility_km != null) rows.push(["Visibility", c.visibility_km + " km"]);
+      if(c.uv_index != null) rows.push(["UV Index", c.uv_index + (c.uv_category ? " (" + c.uv_category + ")" : "")]);
+      if(rows.length){
+        html += `<div class="stat-grid" style="margin-top:6px;">${rows.map(([k,v]) =>
+          `<div class="stat"><span class="k">${escapeHtml(k)}</span><span class="v">${escapeHtml(String(v))}</span></div>`
+        ).join("")}</div>`;
+      }
+    }
+
+    if(data.air_quality && !data.air_quality.error){
+      const aq = data.air_quality;
+      const categoryText = translateAqiCategory(aq.category);
+      html += `<div class="stat-grid" style="margin-top:6px;">
+        <div class="stat"><span class="k">${escapeHtml(i18n("aqiCard.label"))}</span><span class="v">${aq.aqi ?? "—"} · ${escapeHtml(categoryText || "")}</span></div>
+        <div class="stat"><span class="k">PM2.5</span><span class="v">${aq.pm2_5 != null ? aq.pm2_5 + " µg/m³" : "—"}</span></div>
+        <div class="stat"><span class="k">PM10</span><span class="v">${aq.pm10 != null ? aq.pm10 + " µg/m³" : "—"}</span></div>
+        <div class="stat"><span class="k">${escapeHtml(i18n("aqiCard.dominant"))}</span><span class="v">${escapeHtml(aq.dominant_pollutant || "—")}</span></div>
+      </div>`;
+      if(aq.instant_aqi != null && aq.instant_aqi !== aq.aqi){
+        html += `<div class="coords" style="margin-top:2px;">${escapeHtml(i18n("aqiCard.instant").replace("{value}", aq.instant_aqi))}</div>`;
+      }
+    }
+
+    if(alert.hazards && alert.hazards.length){
+      html += `<div class="hazard-chips">${alert.hazards.map(h => `<span class="hazard-chip">${escapeHtml(h)}</span>`).join("")}</div>`;
+    }
+
+    if(data.advisory && data.advisory.length){
+      html += `<ul class="advisory-list">${data.advisory.map(a => `<li>${escapeHtml(a)}</li>`).join("")}</ul>`;
+    }
+
+    if(data.timeline && data.timeline.length > 1){
+      html += `<div class="timeline">${data.timeline.slice(0,7).map(d => `
+        <div class="t-day">
+          <div class="t-dot" style="background:${colorForLevel(d.level)}"></div>
+          <span class="t-label">${(d.date||"").slice(5)}</span>
+        </div>`).join("")}</div>`;
+    }
+
+    if(data.climate_chart && data.climate_chart.years && data.climate_chart.years.length){
+      const cc = data.climate_chart;
+      html += `<div style="margin-top:10px; background:rgba(255,255,255,0.03); border-radius:10px; padding:10px;">
+        <div style="display:flex; gap:14px; font-size:10px; color:var(--fog-300); margin-bottom:6px;">
+          <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--orange);margin-right:4px;"></span>Avg max temp (°C)</span>
+          <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--signal-400);margin-right:4px;"></span>Total rainfall (mm)</span>
+        </div>
+        <div style="height:150px;">${buildClimateChartSVG(cc.years, cc.avg_max_temp_c, cc.total_rainfall_mm)}</div>
+      </div>`;
+      if(data.climate_trend_stats){
+        const s = data.climate_trend_stats;
+        const bits = [];
+        if(s.temp_trend_c_per_decade != null) bits.push(`Temp trend ${s.temp_trend_c_per_decade > 0 ? "+" : ""}${s.temp_trend_c_per_decade}°C/decade`);
+        if(s.rainfall_trend_mm_per_decade != null) bits.push(`Rainfall trend ${s.rainfall_trend_mm_per_decade > 0 ? "+" : ""}${s.rainfall_trend_mm_per_decade} mm/decade`);
+        if(bits.length) html += `<div class="coords" style="margin-top:4px;">${bits.join(" · ")}</div>`;
+      }
+    } else if(data.climate_trend && data.climate_trend.length){
+      // Fallback (no chart data returned): simple bar sparkline as before.
+      html += `<div class="timeline" style="align-items:flex-end;">${data.climate_trend.map(y => {
+        const h = Math.max(4, Math.min(40, (y.total_rainfall_mm||0)/40));
+        return `<div class="t-day"><div class="t-dot" style="height:${h}px;background:var(--signal-400)"></div><span class="t-label">${y.year}</span></div>`;
+      }).join("")}</div>`;
+    }
+
+    if(data.sources && data.sources.length){
+      html += `<div class="advisory-list" style="margin-top:8px;">
+        <div class="coords" style="margin-bottom:2px;">SOURCES</div>
+        ${data.sources.map(s => `<div style="font-size:12px; margin-bottom:2px;">
+          <a href="${escapeHtml(s.link || "#")}" target="_blank" rel="noopener" style="color:var(--signal-400);">
+            ${escapeHtml(s.title || s.source || s.link || "Source")}
+          </a>
+        </div>`).join("")}
+      </div>`;
+    }
+
+    if(data.umbrella_advice){
+      const ua = data.umbrella_advice;
+      html += `<div class="hazard-chips" style="margin-top:8px;">
+        <span class="hazard-chip">${escapeHtml(ua.verdict || "")} · ${ua.probability_pct ?? "—"}% rain</span>
+      </div>`;
+    }
+
+    if(data.active_cyclones && data.active_cyclones.length){
+      html += `<div class="coords" style="margin-top:6px;">ACTIVE CYCLONES — ${data.active_cyclones.map(c => escapeHtml(c.name || "Unnamed")).join(", ")}</div>`;
+    } else if(data.active_cyclones && data.active_cyclones.length === 0 && (intent === "alert" || data.region)){
+      html += `<div class="coords" style="margin-top:6px;">NO ACTIVE CYCLONE in region (IMD + WIS2)</div>`;
+    }
+
+    if(data.district){
+      const d = data.district;
+      const dname = d.district || d.name || "";
+      const st = d.state || "";
+      html += `<div class="coords">DISTRICT ${escapeHtml(dname)}${st ? ", " + escapeHtml(st) : ""} (PostGIS)</div>`;
+    }
+
+    if(data.live_wis2_bulletins && data.live_wis2_bulletins.length){
+      html += `<div class="coords" style="margin-top:4px;">LIVE WIS2.0 FEED — ${data.live_wis2_bulletins.length} recent global cyclone-track bulletin(s)</div>`;
+    }
+
+    if(data.coordinates){
+      html += `<div class="coords">STN ${data.coordinates.lat.toFixed(2)}°, ${data.coordinates.lon.toFixed(2)}° · ${data.date || new Date().toISOString().slice(0,10)}</div>`;
+    }
+
+    if(data.map && data.map.lat != null && data.map.lon != null){
+      const mlat = Number(data.map.lat), mlon = Number(data.map.lon);
+      // Broken previously: "https://maps.?q=..." had no host, so the iframe never loaded.
+      // Use a working OpenStreetMap embed (same reliable source as the error-state map).
+      const delta = 0.06;
+      const bbox = `${mlon-delta},${mlat-delta},${mlon+delta},${mlat+delta}`;
+      const osm = `https://www.openstreetmap.org/export/embed.html?bbox=${encodeURIComponent(bbox)}&layer=mapnik&marker=${mlat},${mlon}`;
+      html += `<div class="map-wrap"><iframe loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="${osm}" title="Location map"></iframe></div>`;
+      html += `<div class="coords">📍 Map center ${mlat.toFixed(4)}°, ${mlon.toFixed(4)}° · OpenStreetMap</div>`;
+    }
+
+    const src = data.data_source || "Open-Meteo NWP (satellite-assimilated ensembles) · IMD · WIS2.0";
+    html += `<div class="data-source">📡 ${escapeHtml(src)}</div>`;
+
+    html += `</div>`;
+    card.innerHTML = html;
+
+    return card;
+  }
+
+  function fmtRange(day){
+    if(!day || day.temperature_2m_min == null || day.temperature_2m_max == null) return "—";
+    return Math.round(day.temperature_2m_min) + "–" + Math.round(day.temperature_2m_max) + "°C";
+  }
+  function colorForLevel(level){
+    return {green:"#2E9E5B", yellow:"#E8B93B", orange:"#E0793C", red:"#D6534A"}[level] || "#2E9E5B";
+  }
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, s => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[s]));
+  }
+
+  
+  async function loadStatusStrip(){
+    const strip = el("statusStrip");
+    if(!strip) return;
+    try{
+      const r = await fetch(API_BASE + "/api/status");
+      if(!r.ok) throw new Error("status fail");
+      const s = await r.json();
+      const integ = s.integrations || {};
+      const pills = [];
+      const add = (label, ok) => pills.push(`<span class="${ok ? "pill-ok" : "pill-warn"}">${label}</span>`);
+      add("Open-Meteo NWP", true);
+      add("IMD Cyclone", true);
+      const wis2 = integ.wis2_mqtt || {};
+      add("WIS2 " + (wis2.connected ? "live" : "standby"), !!wis2.connected || true);
+      add("AQI", true);
+      add("Renewable Energy", true);
+      add("Construction", true);
+      add("Hinglish", true);
+      add("LLM " + ((integ.llm||{}).status === "enabled" ? "on" : "NLU-only"), true);
+      add("SMS " + ((integ.sms_twilio||{}).status === "configured" ? "on" : "seam"), true);
+      strip.innerHTML = pills.join("");
+    }catch(e){
+      strip.innerHTML = '<span class="pill-warn">Backend offline — set API endpoint ⚙</span>';
+    }
+  }
+  loadStatusStrip();
+  setInterval(loadStatusStrip, 30000);
+
+  
+  function applyTheme(mode){
+    document.documentElement.setAttribute('data-theme', mode);
+    localStorage.setItem('wgpt_theme', mode);
+    const metaTheme = document.querySelector('meta[name="theme-color"]');
+    if(metaTheme){
+      metaTheme.setAttribute('content', mode === 'light' ? '#f0f4f8' : '#0b1220');
+    }
+    const metaScheme = document.querySelector('meta[name="color-scheme"]');
+    if(metaScheme){
+      metaScheme.setAttribute('content', mode === 'light' ? 'light' : 'dark');
+    }
+    const b = el('themeBtn');
+    if(b) b.textContent = mode === 'light' ? '☀️ Light' : '🌙 Dark';
+  }
+  const initialTheme = localStorage.getItem('wgpt_theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+  applyTheme(initialTheme);
+  const themeBtn = el('themeBtn');
+  if(themeBtn){
+    themeBtn.addEventListener('click', () => {
+      const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+      applyTheme(cur === 'dark' ? 'light' : 'dark');
+    });
+  }
+
+  async function sendChat(text, coords){
+    const body = {
+      message: text,
+      lang: langSelect.value,
+      lat: coords ? coords.lat : (userCoords ? userCoords.lat : null),
+      lon: coords ? coords.lon : (userCoords ? userCoords.lon : null)
+    };
+    const resp = await fetch(API_BASE + "/api/chat", {
+      method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)
+    });
+    if(!resp.ok) throw new Error("Request failed: " + resp.status);
+    return await resp.json();
+  }
+
+  async function sendMessage(){
+    const text = textInput.value.trim();
+    if(!text) return;
+    addUserBubble(text);
+    textInput.value = "";
+    sendBtn.disabled = true;
+    addTypingBubble();
+    try{
+      const result = await sendChat(text, null);
+      removeTypingBubble();
+      addBotBubble(result.reply, result.data, result.intent);
+    }catch(err){
+      removeTypingBubble();
+      addBotBubble("I couldn't reach the WeatherGPT backend. Check the API endpoint (⚙ below) and that the server is running.");
+      console.error(err);
+    }finally{ sendBtn.disabled = false; }
+  }
+
+  sendBtn.addEventListener("click", sendMessage);
+  textInput.addEventListener("keydown", (e) => { if(e.key === "Enter") sendMessage(); });
+
+  // ---- Voice input (Web Speech API) ----
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let recognizer = null, listening = false;
+  if(SpeechRecognition){
+    recognizer = new SpeechRecognition();
+    recognizer.interimResults = false;
+    recognizer.maxAlternatives = 1;
+    recognizer.onresult = (e) => {
+      const said = e.results[0][0].transcript;
+      textInput.value = said;
+      sendMessage();
+    };
+    recognizer.onend = () => { listening = false; micBtn.classList.remove("listening"); };
+    recognizer.onerror = () => { listening = false; micBtn.classList.remove("listening"); };
+  } else {
+    micBtn.style.display = "none";
+  }
+  micBtn.addEventListener("click", () => {
+    if(!recognizer) return;
+    if(listening){ recognizer.stop(); return; }
+    recognizer.lang = (LANGS[langSelect.value] || {}).speech || "en-IN";
+    try{ recognizer.start(); listening = true; micBtn.classList.add("listening"); }catch(e){}
+  });
+
+  // Welcome bubble
+  addBotBubble("Namaste! I'm WeatherGPT. Ask about weather, AQI, rainfall severity, renewable-energy forecasting, construction contingency, cyclone alerts, farming and more — in the reply language you select. Tap 📍 for your location or try a quick chip below.");
+})();
+
+</script>
+<script>
+// --- Login (phone + OTP) + cyclone-alert subscription -----------------
+// Kept as a standalone block so it doesn't need to reach into the main
+// chat IIFE above; it reads/writes the same "wgpt_api_base" key so both
+// blocks always point at the same backend.
+(function(){
+  "use strict";
+  const API = () => {
+    const saved = localStorage.getItem("wgpt_api_base");
+    if(saved) return saved.replace(/\/$/, "");
+    const qp = new URLSearchParams(location.search).get("api");
+    if(qp) return qp.replace(/\/$/, "");
+    if(location.protocol === "file:" || ["localhost","127.0.0.1"].includes(location.hostname)) return "http://localhost:8000";
+    if(location.hostname === "weather-nova-frontend.onrender.com") return "https://weather-nova-backend.onrender.com";
+    return location.origin;
+  };
+  const TOKEN_KEY = "wgpt_session_token";
+  const PHONE_KEY = "wgpt_session_phone";
+
+  function token(){ return localStorage.getItem(TOKEN_KEY); }
+  function setMsg(t){ const m = document.getElementById("loginMsg"); if(m) m.textContent = t || ""; }
+  function refreshLoginBtn(){
+    const btn = document.getElementById("loginBtn");
+    if(!btn) return;
+    const phone = localStorage.getItem(PHONE_KEY);
+    btn.textContent = phone ? ("Alerts: " + phone) : "Login";
+  }
+  refreshLoginBtn();
+
+  window.openLoginModal = function(){
+    document.getElementById("loginModal").style.display = "flex";
+    document.getElementById("loginStep1").style.display = token() ? "none" : "block";
+    document.getElementById("loginStep2").style.display = "none";
+    setMsg(token() ? "Already logged in as " + localStorage.getItem(PHONE_KEY) + ". You can re-subscribe below." : "");
+    if(token()){
+      // Already logged in: one click re-enables cyclone alerts for this session.
+      verifyOtpAndSubscribeSkip();
+    }
+  };
+  window.closeLoginModal = function(){ document.getElementById("loginModal").style.display = "none"; };
+
+  window.requestOtp = async function(){
+    const phone = document.getElementById("loginPhone").value.trim();
+    if(!phone){ setMsg("Enter a phone number first."); return; }
+    setMsg("Sending code…");
+    try{
+      const r = await fetch(API() + "/api/auth/request-otp", {
+        method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({phone})
+      });
+      const data = await r.json();
+      if(!r.ok){ setMsg(data.detail || "Could not send code."); return; }
+      localStorage.setItem(PHONE_KEY, phone);
+      document.getElementById("loginStep1").style.display = "none";
+      document.getElementById("loginStep2").style.display = "block";
+      setMsg(data.channel === "dev" ? ("Dev mode (no SMS configured) — your code is " + data.dev_otp) : "Code sent by SMS.");
+    }catch(e){ setMsg("Network error reaching " + API()); }
+  };
+
+  window.verifyOtpAndSubscribe = async function(){
+    const phone = localStorage.getItem(PHONE_KEY);
+    const otp = document.getElementById("loginOtp").value.trim();
+    if(!otp){ setMsg("Enter the code."); return; }
+    setMsg("Verifying…");
+    try{
+      const r = await fetch(API() + "/api/auth/verify-otp", {
+        method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({phone, otp})
+      });
+      const data = await r.json();
+      if(!r.ok){ setMsg(data.detail || "Incorrect code."); return; }
+      localStorage.setItem(TOKEN_KEY, data.token);
+      refreshLoginBtn();
+      await subscribeCurrentLocation();
+    }catch(e){ setMsg("Network error reaching " + API()); }
+  };
+
+  async function verifyOtpAndSubscribeSkip(){
+    await subscribeCurrentLocation();
+  }
+
+  async function subscribeCurrentLocation(){
+    setMsg("Enabling cyclone SMS alerts for your location…");
+    const doSubscribe = async (lat, lon) => {
+      try{
+        const r = await fetch(API() + "/api/subscribe", {
+          method:"POST",
+          headers:{"Content-Type":"application/json", "Authorization":"Bearer " + token()},
+          body: JSON.stringify({lat, lon, lang:(localStorage.getItem("wgpt_lang") || "en"), cyclone_alerts:true})
+        });
+        const data = await r.json();
+        if(!r.ok){ setMsg(data.detail || "Could not save subscription."); return; }
+        setMsg("Cyclone SMS alerts are on for your current location. You can close this.");
+      }catch(e){ setMsg("Network error reaching " + API()); }
+    };
+    if(navigator.geolocation){
+      navigator.geolocation.getCurrentPosition(
+        (pos) => doSubscribe(pos.coords.latitude, pos.coords.longitude),
+        () => setMsg("Location permission denied — can't enable alerts without a location."),
+        {timeout: 8000}
+      );
+    } else {
+      setMsg("This browser can't share location — alerts need one.");
+    }
+  }
+})();
+</script>
+</body>
+</html>
